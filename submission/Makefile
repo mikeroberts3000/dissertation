@@ -3,7 +3,7 @@
 R = 00_main
 O = submission
 STY = *.sty
-FIG = images/*.pdf
+FIG = images/*/*.pdf
 
 #Grab the GIT description
 ver := $(shell git describe --dirty)
@@ -16,6 +16,7 @@ $(R).bbl: $(R).bib
 	pdflatex $(R)
 
 $(R).pdf: *.tex $(STY) $(FIG) $(R).bbl
+	pdflatex $(R)
 	pdflatex $(R)
 	pdflatex $(R)
 	pdflatex $(R)

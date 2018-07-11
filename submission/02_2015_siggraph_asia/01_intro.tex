@@ -1,0 +1,38 @@
+\section{Introduction}
+
+It is now possible to mount a high-resolution camera on a quadrotor aerial vehicle, and create beautiful aerial cinematography.
+Quadrotors have become particularly popular because of their maneuverability, small size, and low cost.
+Unfortunately, flying quadrotors is difficult, even for expert users.
+Typically, users control quadrotors with hand-held joysticks, which requires manual dexterity and practice.
+Flying a quadrotor with a camera mounted to it is even more challenging, because both the quadrotor and camera must be simultaneously controlled. 
+Quadrotors can also be flown in autonomous mode, where users design flight paths by specifying waypoints in an offline tool. 
+However, existing flight planning tools are not designed for cinematography: they do not allow users to edit the visual composition of their shot; they do not allow users to preview what their shot will look like; they do not give users precise control over the timing of their shot; and they allow users to create shots that do not respect the physical limits of their quadrotor hardware, which can cause the quadrotor to deviate significantly from the intended trajectory, or even crash.
+
+In this paper, we introduce an interactive tool for  designing quadrotor camera shots. Our tool assists users before capture, and assumes full control during capture.
+%We choose to focus on an offline flight planning tool to relieve the user of the burden of flying a quadrotor by hand.
+In doing so, our tool enables novices and experts to capture high-quality aerial footage.
+To inform the design of our tool, we conducted formative interviews with professional quadrotor photographers and videographers, and we accompanied them on professional quadrotor shoots.
+From this study, we extracted a set of design principles for building useful quadrotor camera shot planning tools. 
+Our interactive interface (see Figure \ref{fig:teaser}) instantiates these principles by: (1) allowing users to specify shots visually in a realistic 3D \textsc{Google Earth} environment; (2) providing a virtual preview of the entire shot; (3) providing users with precise control over the timing of the shot; and (4) notifying users if their intended shot violates the physical limits of their quadrotor hardware.
+Together, these features enable cinematographers to quickly design compelling and challenging shots, focusing on their artistic intent rather than the specific controls of the aircraft. 
+
+To build our tool, we rely on a physical quadrotor camera model, in which a rigid body quadrotor is attached to a camera mounted on a gimbal.
+We analyze the dynamics of our model, and show that camera trajectories must be $C^4$ continuous in order to obey the physical equations of motion for quadrotors.
+With this requirement in mind, we derive an algorithm for synthesizing $C^4$ continuous camera trajectories from user-specified keyframes and easing curves.
+This algorithm enables users to design shots visually, and gives users precise control over the timing of their shot.
+We then derive an algorithm to compute the control signals required for a quadrotor and gimbal to follow any $C^4$ continuous camera trajectory.
+This algorithm enables our tool to provide the user with visually accurate shot previews, and visual feedback about the physical feasibility of camera trajectories.
+
+%To build our tool, we rely on a physical quadrotor camera model, in which a rigid body quadrotor is attached to a camera mounted on a gimbal.
+%In this model, the quadrotor and the gimbal are physically coupled, which enables us to consider their motion jointly.
+%We analyze the dynamics of our model, and derive an algorithm to compute the control signals required for a quadrotor and gimbal to follow any smooth camera trajectory.
+%Our analysis enables us to generate accurate shot previews using \textsc{Google Earth's} 3D data.
+%It also enables us to determine the \textit{feasibility} of a shot with respect to the quadrotor's physical limits, and notify users when these limits are violated.
+%An important consequence from our analysis is that camera trajectories must be $C^4$ continuous. 
+%With this requirement in mind, we describe an algorithm for creating  $C^4$ continuous camera paths from user-specified keyframes. This algorithm enables users to design shots visually in \textsc{Google Earth's} 3D environment.
+%We describe how to re-parameterize our camera paths according to arbitrary easing curves, thereby giving users precise control over the timing of their shots.
+
+We use our tool to generate a variety of quadrotor camera shots. We show a shot captured using our tool in Figure~\ref{fig:teaser}.
+We evaluate our tool in a user study with four cinematographers.
+Two of our users are expert quadrotor pilots, and the other two had almost no quadrotor experience. All of our users appreciated how easy it was to design compelling and challenging shots using our tool.
+Novices stated that our tool would empower them to shoot high-quality aerial footage, a skill otherwise inaccessible to them, and experts stated that our tool would improve and extend their existing workflow.

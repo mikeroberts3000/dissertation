@@ -1,0 +1,39 @@
+\section{Introduction}
+
+When designing trajectories for quadrotor cameras, it is important that the  trajectories respect the dynamics and physical limits of quadrotor hardware.
+We refer to such trajectories as being \emph{feasible}.
+If a quadrotor attempts to execute an \emph{infeasible}  trajectory, 
+the quadrotor can deviate significantly from the intended trajectory, or even crash.
+In addition, the virtual camera previews shown in existing shot planning tools will be visually accurate only if a shot is feasible.
+
+Despite the importance of reasoning about feasibility in the design process, existing tools do not provide automatic methods for guaranteeing feasibility.
+At best, existing tools \emph{notify} users when their trajectories are infeasible, but offer no guidance on how to \emph{modify} these trajectories to make them feasible.
+It can be challenging for users to manually edit their trajectories to be feasible,  while preserving their original artistic intent. Indeed, requiring users to perform this type of manual editing can be quite burdensome, even for experienced users, since it requires users to reason explicitly about the non-linear quadrotor dynamics.
+
+In this paper, we introduce a fast and user-friendly algorithm for generating feasible quadrotor camera trajectories.
+Our algorithm takes as input an infeasible trajectory designed by a user, and produces as output a feasible trajectory that is as similar as possible to the user's input.
+By design, our algorithm does not change the spatial layout or  visual contents of the input trajectory.
+Instead, our algorithm guarantees the feasibility of the output trajectory by \emph{re-timing} the input trajectory, perturbing its timing as little as possible while remaining within velocity and control force limits.
+Using our algorithm, a shot designer can modify a shot to be feasible with a single button click, completely preserving the visual contents of her shot.
+We demonstrate the behavior of our algorithm in Figure \ref{fig:teaser}.
+
+Our choice to perturb the timing of a shot, while leaving the spatial layout and visual contents of the shot intact, leads to a well-behaved non-convex optimization problem that can be solved at interactive rates.
+To formulate our problem, we begin by analyzing the non-linear dynamics of a rigid body quadrotor along a fixed path.
+Based on this analysis, we make two important observations that motivate our approach.
+First, we observe that the full state of the quadrotor, as well as all necessary control forces, are fully determined by the \emph{progress curve} of the quadrotor along the path.
+Second, we observe that all sufficiently smooth progress curves satisfy the non-linear quadrotor dynamics.
+
+Based on the two observations above, we explicitly optimize for the progress curve (and hence, the re-timing of the input trajectory)\ that best agrees with the user's original input, subject to velocity and control force limits.
+%We measure the agreement between the speed profile we're solving for, and the user's input trajectory, with a convex quadratic objective. We express velocity and control force limits as non-convex inequality constraints on the speed profile we're solving for.
+Compared to existing trajectory optimization approaches, our approach has three major advantages. First, our approach requires fewer decision variables.
+Second, our approach avoids slow-to-converge non-linear equality constraints that encode the system dynamics.
+Third, our approach always provides an iterative solver with a well-defined search direction to fall back on, when attempting to satisfy inequality constraints.
+%since slowing down the speed profile (i.e., driving the speed profile closer to zero, thereby forcing the quadrotor to execute the trajectory slower) always results in a closer-to-feasible trajectory.
+Together, these advantages enable an off-the-shelf solver to make very rapid progress towards an optimal solution, ultimately leading to the interactive performance of our algorithm.
+
+We demonstrate the utility of our algorithm by implementing it in \textsc{Horus}~\cite{joubert:2015}, an open-source tool for designing quadrotor camera shots, where we achieve interactive performance across a wide range of camera trajectories.
+We also apply our algorithm to a dataset of 8 infeasible camera trajectories, designed by 2 novice and 2 expert quadrotor cinematographers.
+In all our experiments, our algorithm successfully solves for optimal trajectories in less than 2 seconds, and is between 25$\times$ and 45$\times$ faster than a spacetime constraints approach implemented using a commercially available solver.
+As we scale to more finely discretized trajectories, this performance gap widens, with our algorithm outperforming spacetime constraints by between 90$\times$ and 180$\times$.
+Our algorithm is also more accurate than spacetime constraints, predicting the results of \nth{5} order accurate rigid body physics simulations with lower average error.
+Finally, we fly 5 feasible trajectories generated by our algorithm on a real quadrotor camera, producing video footage that is faithful to \textsc{Google Earth} shot previews, even when the trajectories are at the quadrotor's physical limits.

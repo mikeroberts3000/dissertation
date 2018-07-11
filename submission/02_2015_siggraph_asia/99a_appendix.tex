@@ -1,0 +1,182 @@
+
+% \appendix
+
+\section{Defining the Quadrotor Camera Manipulator Matrices}
+\label{appendix:manipulator}
+
+In this appendix, we define the quadrotor camera manipulator matrices, attempting to be as concise as possible.
+We include a detailed derivation of these matrices in the supplementary material.
+
+We begin by defining the layout of our degree-of-freedom vector $\mathbf{q}$, and our control vector $\mathbf{u}$, as follows,
+%
+\footnotesize
+\begin{equation}
+\mathbf{q} = 
+\begin{bmatrix}
+\mathbf{p} \\
+\mathbf{e}_q \\
+\mathbf{e}_g
+\end{bmatrix}
+%
+~~~~
+\mathbf{u} = 
+\begin{bmatrix}
+\mathbf{u}_q \\
+\mathbf{u}_g
+\end{bmatrix}
+\end{equation}
+\normalsize
+%
+where $\mathbf{p}$ is the position of the quadrotor's center of mass; $\mathbf{e}_q$ is the vector of Euler angles representing the quadrotor's orientation in the world frame; $\mathbf{e}_g$ is the vector of Euler angles representing the orientation of the gimbal in the body frame of the quadrotor; $\mathbf{u}_q$ is the thrust control we apply at the quadrotor propellors; and $\mathbf{u}_g$ is the torque control we apply at the gimbal.
+
+We express the manipulator matrices for our quadrotor camera system as follows,
+%
+\footnotesize
+\begin{equation}
+\begin{aligned}
+\mathbf{H}(\mathbf{q}) = &
+\begin{bmatrix}
+m\mathbf{I}_{3\times3} & \mathbf{0}_{3\times3} & \mathbf{0}_{3\times3} \\
+\mathbf{0}_{3\times3}                          & \mathbf{I}_{q} \mathbf{R}_{\mathcal{Q},\mathcal{W}} \mathbf{A}_q & \mathbf{0}_{3\times3} \\
+\mathbf{0}_{3\times3}                          & \mathbf{0}_{3\times3} & \mathbf{A}_{g}
+\end{bmatrix} \\
+%
+\mathbf{C}(\mathbf{q},\dot{\mathbf{q}}) = &
+\end{aligned} \notag
+\end{equation}
+%
+\vspace{-10pt}
+\begin{equation}
+\begin{aligned}
+\begin{bmatrix}
+\mathbf{0}_{3\times3} & \mathbf{0}_{3\times3}  & \mathbf{0}_{3\times3} \\
+\mathbf{0}_{3\times3} & \mathbf{I}_q \mathbf{R}_{\mathcal{Q},\mathcal{W}} \dot{\mathbf{A}}_q - \left(\mathbf{I}_q \mathbf{R}_{\mathcal{Q},\mathcal{W}} \mathbf{A}_q \dot{\mathbf{e}}_q \right)_{\times}\mathbf{R}_{\mathcal{Q},\mathcal{W}} \mathbf{A}_q & \mathbf{0}_{3\times3} \\
+\mathbf{0}_{3\times3} & \mathbf{0}_{3\times3}  & \dot{\mathbf{A}}_g
+\end{bmatrix}
+\end{aligned} \notag
+\end{equation}
+%
+\begin{equation}
+\begin{aligned}
+\mathbf{G}(\mathbf{q}) = &
+\begin{bmatrix}
+-\mathbf{f}_e \\
+\mathbf{0}_{3\times1} \\
+\mathbf{0}_{3\times1} \\
+\end{bmatrix} \\
+%
+\mathbf{B}(\mathbf{q}) = &
+\begin{bmatrix}
+\mathbf{R}_{\mathcal{W},\mathcal{Q}} \mathbf{M}_{\mathbf{f}}    & \mathbf{0}_{3\times3} \\
+\mathbf{M}_{\mathbf{\tau}}                                      & \mathbf{0}_{3\times3} \\
+\mathbf{0}_{3\times4}                                           & \mathbf{I}_{3\times3} \\
+\end{bmatrix} ~~~~~~~~~~~~~\text{}
+\end{aligned}
+\end{equation}
+%
+\normalsize
+where $m$ is the mass of the quadrotor camera;
+$\mathbf{I}_q$ is the inertia matrix of the quadrotor camera;
+$\mathbf{R}_{\mathcal{W},\mathcal{Q}}$ is the rotation matrix that represents the quadrotor's orientation in the world frame (i.e., the rotation matrix that maps vectors from the body frame of the quadrotor into the world frame);
+$\mathbf{R}_{\mathcal{Q},\mathcal{W}}$ is the rotation matrix that maps vectors from the world frame into the body frame of the quadrotor;
+$\mathbf{A}_q$ is the matrix that relates the quadrotor's Euler angle time derivatives to its angular velocity in the world frame;
+$\mathbf{A}_g$ is the matrix that relates the gimbal's Euler angle time derivatives to its angular velocity in the body frame of the quadrotor;
+$\mathbf{f}_e$ is the external force;
+$\mathbf{M}_{\mathbf{f}}$ is the matrix that maps the control input at each of the quadrotor's propellers into a net thrust force oriented along the quadrotor's local $\mathbf{y}$ axis;
+$\mathbf{M}_{\mathbf{\tau}}$ is the matrix that maps the control input at each of the quadrotor's propellers into a net torque acting on the quadrotor in the body frame;
+$\mathbf{0}_{p \times q}$ is the $p \times q$ zero matrix;
+$\mathbf{I}_{k \times k}$ is the $k \times k$ identity matrix;
+and the notation $\left( \mathbf{a} \right)_{\times}$ refers to the skew-symmetric matrix, computed as a function of the vector $\mathbf{a}$, such that $\left(\mathbf{a}\right)_{\times}\mathbf{b} = \mathbf{a}\times\mathbf{b}$ for all vectors $\mathbf{b}$.
+
+Our expressions for the quadrotor camera manipulator matrices depend on the matrices, $\mathbf{M}_{\mathbf{f}}$ and $\mathbf{M}_{\mathbf{\tau}}$.
+We define these matrices as follows, 
+%
+\footnotesize
+\begin{equation}
+\begin{aligned}
+%
+\mathbf{M}_{\mathbf{f}} = &
+\begin{bmatrix}
+0 & 0 & 0 & 0 \\
+1 & 1 & 1 & 1 \\
+0 & 0 & 0 & 0 \\
+\end{bmatrix}\\
+%
+\mathbf{M}_{\mathbf{\tau}} = &
+\begin{bmatrix}
+ ds_\alpha & ds_\beta & -ds_\beta & -ds_\alpha \\
+\gamma     & -\gamma  & \gamma    & -\gamma    \\
+-dc_\alpha & dc_\beta & dc_\beta  & -dc_\alpha \\
+\end{bmatrix}
+%
+\end{aligned}
+\end{equation}
+\normalsize
+%%
+where $d$, $\alpha$, $\beta$, and $\gamma$ are constants related to the physical design of a quadrotor:
+$d$ is the distance from the quadrotor's center of mass to its propellers;
+$\alpha$ is the angle in radians that the quadrotor's front propellers form with the quadrotor's positive $\mathbf{x}$ axis;
+$\beta$ is the angle in radians that the quadrotor's rear propellers form with the quadrotor's negative $\mathbf{x}$ axis;
+$\gamma$ is the magnitude of the in-plane torque generated by the quadrotor propeller producing 1 unit of upward thrust force;
+$c_a=\cos a$ and $s_a=\sin a$.
+
+Note that our expressions for the quadrotor camera manipulator matrices, in particular our expressions for $\mathbf{A}_q$ and $\mathbf{A}_g$, depend on our choice of Euler angle conventions.
+See our derivation in the supplementary material for details.
+
+%Our expressions for the quadrotor camera manipulator matrices also depend on our choice of Euler angle conventions.
+%Throughout this paper, we adopt the following Euler angle conventions.
+%Let $\mathbf{e} = [ \theta ~ \psi ~ \phi ]^T$ be a vector of Euler angles, and let $\omega$ be angular velocity in the non-rotating frame as these Euler angles change over time. We define the corresponding rotation matrix $\mathbf{R}$ in terms of the Euler angles $\theta$, $\psi$, and $\phi$ as follows,
+%%
+%\footnotesize
+%\begin{equation}
+%\begin{aligned}
+%%
+%\mathbf{R} & = \mathbf{R}_{\mathbf{y}}^{\psi} \mathbf{R}_{\mathbf{z}}^{\theta} \mathbf{R}_{\mathbf{x}}^{\phi} \\
+%& = 
+%\begin{bmatrix}
+%c_\psi  & 0 & s_\psi \\
+%0       & 1 & 0 \\
+%-s_\psi & 0 & c_\psi \\
+%\end{bmatrix}
+%\begin{bmatrix}
+%1 & 0        & 0 \\
+%0 & c_\theta & -s_\theta \\
+%0 & s_\theta & c_\theta \\
+%\end{bmatrix}
+%%
+%\begin{bmatrix}
+%c_\phi & -s_\phi & 0 \\
+%s_\phi & c_\phi  & 0 \\
+%0      & 0       & 1 \\
+%\end{bmatrix}
+%%
+%\end{aligned}
+%\end{equation}
+%\normalsize
+%%
+%where $c_a=\cos a$ and $s_a=\sin a$.
+%Finally, we define the matrix $\mathbf{A}$ that relates $\dot{\mathbf{e}}$ to $\omega$ according to the linear relationship $\mathbf{A} \dot{\mathbf{e}} = \omega$, and its time derivative $\dot{\mathbf{A}}$, as follows,
+%%
+%\footnotesize
+%\begin{equation}
+%\begin{aligned}
+%%
+%\mathbf{A} & =
+%\begin{bmatrix}
+%c_\psi  & 0 & s_\psi c_\theta \\
+%0       & 1 & -s_\theta       \\
+%-s_\psi & 0 & c_\psi c_\theta \\
+%\end{bmatrix} \\
+%%
+%\dot{\mathbf{A}} & =
+%\begin{bmatrix}
+%-s_\psi \dot{\psi} & 0 & -s_\psi s_\theta \dot{\theta} + c_\psi c_\theta \dot{\psi} \\
+%0                  & 0 & -c_\theta \dot{\theta} \\
+%-c_\psi \dot{\psi} & 0 & -s_\psi c_\theta \dot{\psi} + s_\theta c_\psi \dot{\theta} \\
+%\end{bmatrix}
+%%
+%\end{aligned}
+%\end{equation}
+%\normalsize
+%%
+%where $c_a=\cos a$ and $s_a=\sin a$.

@@ -1,0 +1,37 @@
+\vspace{-5pt}
+\section{Conclusions}
+\vspace{-1pt}
+
+We proposed an intuitive coverage model for aerial 3D scanning, and we made the observation that our model is submodular.
+We leveraged submodularity to develop a computationally efficient method for generating scanning trajectories, that reasons jointly about coverage rewards and travel costs.
+We evaluated our method by using it to scan three large real-world scenes, and a scene in a photorealistic video game simulator.
+We found that our method results in quantitatively higher-quality 3D reconstructions than baseline methods, both geometrically and visually.
+
+%Two optimality gaps are introduced in our method, where we first solve for the approximately optimal set of camera orientations, and subsequently solve for the approximately optimal path to an additive orienteering problem.
+%Although we show strong empirical results against baseline methods, there is an opportunity to better understand the effects of these approximations in each stage of our method.
+
+%There is also an opportunity to investigate other ways to model the usefulness of camera trajectories, that more faithfully capture the true 3D reconstruction process, while still being computationally tractable to optimize.
+
+%An additional limitation is that our current implementation is strongly dependent on the validity of the initial geometry estimate; however, this is not fundamental constraint of our approach.
+
+In the future, we believe trajectory optimization and geometric reasoning will enable drones to capture the physical world with unprecedented coverage and scale.
+Individual drones may soon be able to execute very efficient scanning trajectories at the limits of their dynamics, and teams of drones may soon be able to execute scanning trajectories collectively and iteratively over very large scenes.
+
+\vspace{-6pt}
+\section*{Acknowledgements}
+\vspace{-3pt}
+
+We thank Jim Piavis and Ross Robinson for their expertise as our safety pilots;
+Don Gillett for granting us permission to scan the barn scene;
+3D Robotics for granting us permission to scan the industrial scene;
+Weichao Qiu for his assistance with UnrealCV;
+Jane E and Abe Davis for proofreading the paper;
+and Okke Schrijvers for the helpful discussions.
+This work began when Mike Roberts was a research intern at Microsoft Research, and was subsequently supported by a generous grant from Google.
+%In the future, we believe the ideas in this paper could become part of the standard toolbox for aerial 3D scanning.
+%By using our discrete scanning trajectories to initialize a continuous optimization method, it would be possible to generate smooth scanning trajectories that could be executed on drones at very high speeds.
+%We are also optimistic that the trajectory optimization methods in this paper could be extended to coordinate teams of drones, leading to rapid scanning of very large scenes.
+
+%We introduced a novel coverage model that characterizes the usefulness of a camera trajectory for multi-view stereo reconstruction, and we leveraged the submodularity property of our model to derive an algorithm for generating efficient scanning trajectories. We used our algorithm to scan three large outdoor scenes, and we evaluated our algorithm in a photorealistic simulator, where we obtained significantly higher-quality 3D reconstructions than a strong baseline method.
+
+%In the future, we believe the ideas in this paper could become part of the standard toolbox for aerial 3D scanning. By using our discrete scanning trajectories to initialize a continuous optimization method, it would be possible to generate smooth scanning trajectories that could be executed on drones at very high speeds. Submodular trajectory optimization could also enable teams of drones to scan very large scenes (e.g., an entire university campus) fully autonomously, and with unprecedented geometric fidelity.

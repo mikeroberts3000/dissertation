@@ -1,0 +1,50 @@
+\section{Design Principles}
+\label{section:design}
+
+In order to design more effective tools for quadrotor camera control, we began by analyzing manuals on cinematography~\cite{mascelli:1965,arijon:1976,katz:1991}, as well as conducting formative interviews. 
+We interviewed six professional photographers and videographers.
+Their level of expertise with quadrotor cameras ranged from novice to expert.
+We accompanied two of the quadrotor experts to professional quadrotor shoots.
+All participants primarily fly quadrotors manually, but have used existing trajectory planning tools.
+Each interview lasted approximately an hour.
+We asked them 30--40 questions pertaining to their setup, their preparations before capture, their workflow during capture, their post-processing steps, and their wish list for quadrotor cinematography.
+From this study, we extracted a set of design principles for building effective quadrotor camera planning tools.   
+
+\paragraph{Allow Users to Design Shots Visually}
+All participants were primarily concerned with the visual contents of a shot.
+For this reason, when flying the quadrotor manually, they relied heavily on a real-time video feed from the camera to decide whether the current shot captures their artistic intent.
+Therefore, an effective tool for planning quadrotor camera trajectories should allow users to design shots visually. 
+
+\paragraph{Produce Visually Accurate Shot Previews}
+Tools for designing camera trajectories should provide a preview of the entire shot.
+This preview needs to be visually accurate. In other words, the frames from the preview shot need to be as visually similar as possible to the real captured frames.
+Guaranteeing visual accuracy is challenging, because the physical dynamics of quadrotors impose constraints on the kinds of camera paths that can be executed.
+If a shot planning tool does not consider these dynamics when synthesizing camera paths, the quadrotor can deviate significantly from the intended shot during capture, reducing the accuracy of the visual preview.
+Therefore, an effective tool should consider the physical dynamics of quadrotors when synthesizing trajectories, in order to create visually accurate shot previews. 
+
+\paragraph{Give Users Precise Timing Control}
+Several participants expressed how critical it is to be able to control the timing of a shot.
+Indeed, controlling the timing of a shot enables users to specify ease-in and ease-out behavior, which is important in cinematography~\cite{arijon:1976,lasseter:1987}.
+Therefore, an effective tool should allow users to precisely control the shot's visual progression over time.
+
+\paragraph{Consider Physical Hardware Limits} 
+Quadrotor cameras have inherent physical limits, such as limited maximum thrust, limited maximum velocity, and a limited range of joint angles that are achievable on the camera gimbal.
+Attempting to fly a trajectory that does not respect these physical limits can cause the quadrotor to deviate significantly from the intended trajectory, or even crash.
+%For example, a user might specify a shot that exceeds the quadrotor's maximum velocity.
+%If the user attempted to fly this shot, the quadrotor would lag behind its intended position and cut corners, leading to a shot that is visually different from the user's intended shot.
+Indeed, several participants reported destroying equipment in accidents where they misjudged the safety of their camera trajectory or the abilities of their hardware.
+Therefore, it is crucial for an effective tool to consider the physical limits of the aircraft.
+
+\paragraph{Provide Users with Spatial Awareness}
+Participants often reasoned about the path a camera takes through space.
+For example, some participants verbally describe shots by saying \emph{``move from here to there while keeping this in view''} or \emph{``circle around a point''}.
+Moreover, users are concerned with the quadrotor's safety around obstacles.
+Therefore, an effective tool should provide a virtual environment that is accurately aligned to the real shot location, in order to provide users with meaningful spatial awareness.
+
+\paragraph{Support Rapid Iteration and Provide Repeatability} 
+Cinematographers often perform multiple \emph{takes} of the same shot~\cite{mascelli:1965}.
+Between takes, they tweak elements of the scene until they achieve their artistic vision.
+In support of this workflow, participants expressed the need for tools that support iteration and repeatability with quadrotors. 
+In outdoor environments where lighting and weather conditions can change rapidly and greatly affect the quality of a shot, it is important for users to be able to repeat the same shot multiple times. 
+In addition, an effective tool should allow users to rapidly iterate, supporting the creative process of exploring and designing shots.
+

@@ -11,15 +11,31 @@
 \documentclass{report}
 \usepackage{suthesis-2e}
 
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{hyperref}
 
-\dept{Computer Science}
+\usepackage[numbered]{algorithm}
+\usepackage[noend]{algorithmic}
+\usepackage[super]{nth}
+
+\floatstyle{boxed}
+\newfloat{Listing}{t}{ext}
+\renewcommand{\algorithmicrequire}{\small\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\small\textbf{Output:}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \begin{document}
-\title{
-Trajectory Optimization Methods for Drone Cameras}
 
+\newcommand{\shortcite}[1]{\cite{#1}}
+
+\title{Trajectory Optimization Methods for Drone Cameras}
 \author{Mike Roberts}
+\dept{Computer Science}
 \principaladviser{Pat Hanrahan}
 \firstreader{Doug James}
 \secondreader{Fredo Durand}
@@ -34,7 +50,43 @@ Trajectory Optimization Methods for Drone Cameras}
 \afterpreface
 
 \input{01_introduction/00_main}
-\input{02_conclusions/00_main}
+
+\chapter{An Interactive Tool for Designing Quadrotor Camera Shots}
+
+\input{02_2015_siggraph_asia/00a_teaser}
+\input{02_2015_siggraph_asia/00b_abstract}
+\input{02_2015_siggraph_asia/01_intro}
+\input{02_2015_siggraph_asia/02_relatedwork}
+\input{02_2015_siggraph_asia/03_design}
+\input{02_2015_siggraph_asia/04_UI}
+\input{02_2015_siggraph_asia/04b_overview.tex}
+\input{02_2015_siggraph_asia/05_method}
+\input{02_2015_siggraph_asia/05b_hw}
+\input{02_2015_siggraph_asia/06_eval}
+\input{02_2015_siggraph_asia/07_disc}
+\input{02_2015_siggraph_asia/99a_appendix}
+\input{02_2015_siggraph_asia/99b_supplementary}
+
+\chapter{Generating Dynamically Feasible Trajectories for Quadrotor Cameras}
+
+\input{03_2016_siggraph/00a_teaser}
+\input{03_2016_siggraph/00b_abstract}
+\input{03_2016_siggraph/01_introduction}
+\input{03_2016_siggraph/02_relatedwork}
+\input{03_2016_siggraph/05_method}
+\input{03_2016_siggraph/10_evaluation}
+\input{03_2016_siggraph/11_conclusions}
+\input{03_2016_siggraph/99a_appendix}
+
+\chapter{Submodular Trajectory Optimization for Aerial 3D Scanning}
+
+\input{04_2017_iccv/00_abstract}
+\input{04_2017_iccv/10_intro}
+\input{04_2017_iccv/20_related_work}
+\input{04_2017_iccv/30_approach}
+\input{04_2017_iccv/40_results}
+\input{04_2017_iccv/50_discussion}
+\input{04_2017_iccv/99_supplementary}
 
 \appendix
 
