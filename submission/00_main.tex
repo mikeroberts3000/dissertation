@@ -1,0 +1,46 @@
+%
+% Stanford University PhD thesis style -- modifications to the report style
+% This is unofficial so you should always double check against the
+% Registrar's office rules
+% See http://library.stanford.edu/research/bibliography-management/latex-and-bibtex
+% 
+% Example of use below
+% See the suthesis-2e.sty file for documentation
+%
+
+\documentclass{report}
+\usepackage{suthesis-2e}
+
+\usepackage{hyperref}
+
+\dept{Computer Science}
+
+\begin{document}
+\title{
+Trajectory Optimization Methods for Drone Cameras}
+
+\author{Mike Roberts}
+\principaladviser{Pat Hanrahan}
+\firstreader{Doug James}
+\secondreader{Fredo Durand}
+%\thirdreader{Fredo Durand} %if needed
+%\fourthreader{Severus Snape} %if needed
+
+\beforepreface
+
+\input{00a_preface/00_main}
+\input{00b_acknowledgements/00_main}
+
+\afterpreface
+
+\input{01_introduction/00_main}
+\input{02_conclusions/00_main}
+
+\appendix
+
+\input{99a_alongproof/00_main}
+
+\bibliographystyle{plain}
+\bibliography{00_main}
+
+\end{document}
