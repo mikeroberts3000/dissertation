@@ -1,7 +1,7 @@
 # make -f Makefile_pdflatex
 
 R = 00_main
-O = submission
+O = dissertation_draft
 STY = *.sty
 FIG = images/*/*.pdf
 
@@ -20,7 +20,7 @@ $(R).pdf: *.tex $(STY) $(FIG) $(R).bbl
 	pdflatex $(R)
 	pdflatex $(R)
 	pdflatex $(R)
-	cp $(R).pdf $(O)_$(ver).pdf
+	cp $(R).pdf $(O).pdf
 
 clean:
 	rm -f $(R).log $(R).aux $(R).bbl $(R).blg $(R).out $(R).toc $(R).lot $(R).lof $(R).pdf

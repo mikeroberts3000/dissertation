@@ -1,3 +1,71 @@
-\chapter{Introduction}
 
-Blah blah blah.
+Drone cameras are everywhere.
+In the last few years, these devices are emerging as a fundamentally new kind of consumer camera.
+Indeed, the US government forecasts that over 3 million consumer drones will be deployed nationally by 2019~\cite{?}.
+The rapidly growing popularity of drone cameras can be attributed to their agility. Drone cameras can maneuver through their environment in a totally freeform way, and there is an exciting and dynamic quality to drone footage that is nearly impossible to obtain otherwise.\footnote{As an example of particularly compelling drone footage, we encourage the reader to watch this shot of Venice Beach by Robert McIntosh, one of the world's best drone pilots: \url{https://vimeo.com/218839072}.}
+
+Drone cameras are enabling professional filmmakers to tell stories in new ways. 
+For example, drones are being used to film scenes in a growing number of Hollywood movies, including \textsc{The Wolf of Wall Street}, \textsc{Transformers}, and \textsc{Skyfall}~\cite{?}.
+But the potential applications for drone cameras extend far beyond Hollywood.
+Drone cameras are being used in disaster scenarios~\cite{?}, wildlife monitoring~\cite{?}, journalism~\cite{?}, as well as in 3D mapping~\cite{?}, surveying~\cite{?}, and inspection~scenarios~\cite{?}.
+
+But drone cameras are hard to use.
+It is challenging for novice users to fly simple trajectories without crashing, and it is challenging for experts to obtain the kind of smooth and aesthetically pleasing footage you'd expect to see in a Hollywood movie.
+Our top-level goal in this dissertation is to make drone cameras easier to use.
+
+\section{Why Are Drone Cameras Hard To Use?}
+
+Before we go any further, it is worth taking a moment to ask ourselves why drone cameras are hard to use.
+Today, the most common method for practitioners to control drone cameras is to pilot them manually with remote-control helicopter joysticks.
+But this control interface can be counter-intuitive, especially for novice users, because it requires translating high-level goals for the drone (e.g., ``get low to the ground and go towards that building") into low-level joystick commands (e.g., ``pull back on the left joystick and simultaneously sweep towards 12 o'clock on the right joystick).
+This translation task is made more cognitively demanding because joystick commands typically correspond to drone actions in the \emph{body frame} of the drone (i.e., the coordinate system that is rigidly attached to the drone). 
+For example, pressing up on a joystick will move the drone ``forward" in the drone's body frame.
+But a user's goals are typically easiest to express in the \emph{world frame} (i.e., the coordinate system that is rigidly attached to the environment).
+Based on this reasoning, we find that joysticks burden users by forcing them to translate drone actions from the world frame into the body frame.
+
+Additionally, users must control the orientation of the camera, which is typically mounted on an independent orientable joint known as a \emph{gimbal}.
+It is especially challenging to control the gimbal while simultaneously maneuvering the drone.
+With this difficulty in mind, expert drone pilots often work in teams, with one pilot controlling the drone motion, and another controlling the camera gimbal.
+Sometimes, these teams even work with a third expert, who is responsible for controlling the camera's focus.
+
+~
+
+\hspace{-15pt}\textbf{ROUGH DRAFT (JUST THE SCRIPT FROM MY JOB TALK FOR NOW)}
+
+~
+
+\hspace{-15pt}Here, we’re seeing a team of expert drone pilots on set, as they’re capturing footage for a music video.
+The guy on the left is controlling the drone, the guy on the right is controlling the camera, and sometimes this team even works with a third expert who’s entire job is just to control the camera’s focus.
+And the whole time they’re doing this, they’re using these remote-control helicopter-style joysticks that can be counter-intuitive to use.
+
+As an alternative to flying with joysticks, there is also flight planning software that enables you to set a sequence of waypoints, and then your drone will fly autonomously and attempt to follow the waypoints.
+But the problem with flight planning software like this, is that it’s not expressive enough.
+There are tons of cool maneuvers that my drone could do, that are difficult or impossible to express in an interface like this.
+And, for that matter, there are plenty of maneuvers that my drone can’t do, that would be easy to express in an interface like this.
+
+So those are our options today.
+On the one hand, we’ve got joysticks.
+That’s kind of a low-level close-to-the-metal interface that’s hard to use.
+And on the other hand, we’ve got this flight planning software that’s not very expressive.
+But if we want non-experts like firefighters and journalists to use drone cameras to their full potential, then we need to be designing tools up here.
+
+However, there is a fundamental problem.
+As our interfaces move further away from explicitly specifying motor torques, computing the final drone trajectory from the user’s input becomes increasingly ambiguous.
+The problem becomes increasingly ILL-POSED.
+So if we want to build these high-level tools for non-experts, how do do we even interpret the user input we’re getting?
+
+So the big idea in this talk, is that we’re going to use the language of TRAJECTORY OPTIMIZATION to help us RECOVER the drone trajectory that the user intended, given some high-level description.
+So we’ll be formulating optimization problems like this, where we want to somehow choose a sequence of drone actions to minimize some cost function, subject to some constraints.
+The cost function we choose, is going to depend on the particular application.
+It’s going to encode the user’s preferences, and any prior knowledge we have about the problem.
+And the constraints are going to be things like the drone’s physical limits, and any strict requirements we get from the user.
+Trajectory optimization problems of this form are not new.
+These tools have been widely applied to drones.
+But they haven’t been so widely applied to drone cameras.
+So that’s what we’re going to be doing in this talk.
+And in particular, we’re going to make use of domain knowledge that is specialized to a particular drone camera task.
+And then we’re going to use this domain knowledge to reformulate classical trajectory optimization problems in terms of the drone camera output.
+And ultimately this reasoning is going to lead to new algorithms.
+
+And in this talk, I’m going to focus on two baby steps that I’ve taken towards this big goal of making drone cameras easier to use and more expressive.
+First I’m going to talk about cinematography, and then I’m going to talk about 3D scanning.
