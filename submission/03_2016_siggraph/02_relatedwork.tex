@@ -9,7 +9,7 @@ However, most existing tools do not reason explicitly about the quadrotor dynami
 
 %\cite{3drobotics:2015,apm:2015,dji:2015a,dji:2015,meier:2012}
 
-The shot planning tool introduced by Joubert et al.~\shortcite{joubert:2015} computes velocities and control forces along a user-specified trajectory, notifying the user if her shot is infeasible. However, this tool offers no guidance on how to modify the shot to make it feasible.
+The shot planning tool introduced in Chapter~\ref{sec:ch2} computes velocities and control forces along a user-specified trajectory, notifying the user if her shot is infeasible. However, this tool offers no guidance on how to modify the shot to make it feasible.
 The tool introduced by Gebhardt et al.~\shortcite{gebhardt:2016} optimizes quadrotor camera trajectories subject to velocity and control force limits, and is therefore capable of generating feasible trajectories.
 However, this tool uses an approximate linear model of the quadrotor dynamics, which is only accurate for conservative trajectories.
 In contrast, our algorithm reasons explicitly about the non-linear quadrotor dynamics, and is applicable to aggressive trajectories that are at a quadrotor's physical limits.

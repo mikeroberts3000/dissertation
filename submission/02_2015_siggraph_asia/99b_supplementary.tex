@@ -76,7 +76,7 @@
 \subsection{Deriving the Quadrotor Camera Manipulator Matrices}
 \label{sec:ch2:manipulator_detail}
 
-In this section, we derive the manipulator matrices for our quadrotor camera model.
+In this subsection, we derive the manipulator matrices for our quadrotor camera model.
 At a high level, our strategy will be to relate our quadrotor camera's degrees of freedom to our control inputs.
 
 In the derivation that follows, we assume that our quadrotor and gimbal are \emph{kinematically coupled}~\cite{kondak:2013}, in the sense that moving the position of the quadrotor also moves the position of the gimbal. However, we assume that our quadrotor and gimbal are not \emph{dynamically coupled}~\cite{kondak:2013}, in the sense that torques acting on the gimbal do not induce reactive torques on the quadrotor.
@@ -355,7 +355,7 @@ Note that  $C^4$ continuous position trajectories are only guaranteed to produce
 \subsection{Empirical Justification for Minimizing the \nth{4} Derivative of \nth{7} Degree Polynomials}
 \label{sec:ch2:derivative_experiment}
 
-In this section, we evaluate alternative polynomial representations for quadrotor camera paths.
+In this subsection, we evaluate alternative polynomial representations for quadrotor camera paths.
 We find that minimizing the \nth{4} derivative of \nth{7} degree piecewise polynomials produces the smoothest and most reasonably bounded control signals for quadrotors (see Figures~\ref{fig:ch2:method_comparison} and \ref{fig:ch2:parameter_comparison} in this document).
 
 When evaluating alternative polynomial representations, we chose to limit our experiments to odd degree (i.e., even order) polynomials, since these tend to produce smoother curves than even degree (i.e., odd order) polynomials~\cite{goshtasby:1990}.

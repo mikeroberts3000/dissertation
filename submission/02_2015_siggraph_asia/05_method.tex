@@ -219,7 +219,7 @@ In our algorithm, the quadrotor's local $\mathbf{y}$ (up) axis, in combination w
 \end{Listing}
 
 In this section, we consider the problem of synthesizing a \emph{state space trajectory} and corresponding \emph{control trajectory} that will command our quadrotor and gimbal to follow a given \emph{virtual camera trajectory} in the world frame.
-At a high level, our approach is to compute a trajectory through our quadrotor camera's state space, that places the gimbal at the same world frame pose as the virtual camera we are trying to follow at all times.
+At a high level, our approach is to compute a trajectory through our quadrotor camera's state space, that places the gimbal at the same world-frame pose as the virtual camera we are trying to follow at all times.
 We then substitute this \emph{state space trajectory} into equation~(\ref{eqn:ch2:manipulator}) to solve for the corresponding \emph{control trajectory}.
 Note that the quadrotor's orientation is partially determined by its direction of acceleration (see Listing~\ref{lst:ch2:orientation_quad}).
 Therefore, we must use the available degrees of freedom in the gimbal, to align the orientation of the gimbal with the orientation of the virtual camera we are trying to follow.

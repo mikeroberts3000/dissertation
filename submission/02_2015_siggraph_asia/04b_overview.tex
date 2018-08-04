@@ -28,7 +28,7 @@ At a high level, our approach is to optimize the smoothness of the camera trajec
 
 We then derive an algorithm to compute the control signals required for a quadrotor and gimbal to follow any $C^4$ continuous camera trajectory (Section~\ref{sec:ch2:flatness}).
 This algorithm enables our tool to provide the user with visually accurate shot previews, and visual feedback about the physical feasibility of camera trajectories.
-At a high level, our approach is to compute a trajectory through our quadrotor camera's state space that places the gimbal at the same world frame pose as the camera we are trying to follow at all times.
+At a high level, our approach is to compute a trajectory through our quadrotor camera's state space that places the gimbal at the same world-frame pose as the camera we are trying to follow at all times.
 We use this state space trajectory to solve for the quadrotor and gimbal control signals.
 
 Our algorithm for synthesizing camera trajectories is guaranteed to produce trajectories that obey the physical equations of motion for quadrotors.
@@ -47,7 +47,7 @@ However, computing control signals enables our tool to provide visual feedback a
 
 \begin{tcolorbox}[before skip=20pt, after skip=20pt, sharp corners]
 \begin{center}
-\textbf{In the following chapter, we will \emph{computationally} generate trajectories that adhere to the physical limits of a quadrotor.}
+\textbf{In Chapter~\ref{sec:ch3}, we will \emph{computationally} generate trajectories that adhere to the physical limits of a quadrotor.}
 \textbf{But for now, we rely on the user to adjust her shot if it violates these limits.}
 \end{center}
 \end{tcolorbox}
