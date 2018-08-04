@@ -1,10 +1,10 @@
 \section{A Quadrotor Camera Model}
-\label{section:model}
+\label{sec:ch2:model}
 
 \begin{figure}[t]
-  \centering
-  \includegraphics[width=3.0in]{images/2015_siggraph_asia/model.pdf}
-  \caption{
+\centering
+\includegraphics[width=4.0in]{images/2015_siggraph_asia/model.pdf}
+\caption{
 Overview of our quadrotor camera model, shown in 2D\ for simplicity.
 (a) Degrees of freedom. We model the physical state of a quadrotor camera with the following degrees of freedom: the position of the quadrotor in the world frame, $\mathbf{p}$; the orientation of the quadrotor in the world frame, $\theta_q$; and the orientation of the gimbal in the body frame of the quadrotor, $\theta_g$.
 Note that the orientation of the gimbal is defined relative to the orientation of the quadrotor.
@@ -14,12 +14,12 @@ The only other force acting on the quadrotor is an external force $\mathbf{f}_e$
 We orient the camera by applying a torque control at the gimbal, $\mathbf{u}_g$.
 Note that thrust is always aligned with the quadrotor's local up direction.
 }
-  \label{figure:model}
+\label{fig:ch2:model}
 \end{figure}
 
 In this section, we introduce our physical quadrotor camera model, in which a rigid body quadrotor is attached to a camera mounted on a gimbal.
 We model the gimbal as a ball-and-socket joint that is rigidly attached to the quadrotor'’s center of mass.
-We provide an overview of our model in Figure~\ref{figure:model}.
+We provide an overview of our model in Figure~\ref{fig:ch2:model}.
 
 Our model assumes that the quadrotor can be maneuvered by applying thrust forces at the propellers, and that the camera can be oriented by applying a torque to a ball-and-socket joint at the quadrotor's center of mass.
 We refer to these forces and torques as \emph{control inputs}, since we apply them to control the physical state of the quadrotor camera.
@@ -44,37 +44,37 @@ We relate the physical state of the quadrotor camera to the control inputs as fo
 \begin{equation}
 \begin{aligned}
 \mathbf{H}(\mathbf{q}) \ddot{\mathbf{q}} + \mathbf{C}(\mathbf{q},\dot{\mathbf{q}}) \dot{\mathbf{q}} + \mathbf{G}(\mathbf{q}) = \mathbf{B}(\mathbf{q}) \mathbf{u}\\
-\text{subject to~~~~} \mathbf{u}_{\text{min}}       \leq \mathbf{u}       \leq \mathbf{u}_{\text{max}}~~~~~~~~~\\
-                      \mathbf{q}_{\text{min}}       \leq \mathbf{q}       \leq \mathbf{q}_{\text{max}}~~~~~~~~~\\
-                      \dot{\mathbf{q}}_{\text{min}} \leq \dot{\mathbf{q}} \leq \dot{\mathbf{q}}_{\text{max}}~~~~~~~~~
+\text{subject to~~~~} \mathbf{u}^{\text{min}}       \leq \mathbf{u}       \leq \mathbf{u}^{\text{max}}~~~~~~~~~\\
+                      \mathbf{q}^{\text{min}}       \leq \mathbf{q}       \leq \mathbf{q}^{\text{max}}~~~~~~~~~\\
+                      \dot{\mathbf{q}}^{\text{min}} \leq \dot{\mathbf{q}} \leq \dot{\mathbf{q}}^{\text{max}}~~~~~~~~~
 \end{aligned}
-\label{equation:manipulator}
+\label{eqn:ch2:manipulator}
 \end{equation}
 %
 where the matrix $\mathbf{H}$ models generalized inertia; the matrix $\mathbf{C}$ models generalized velocity-dependent forces like drag; the vector $\mathbf{G}$ models generalized potential forces like gravity; the matrix $\mathbf{B}$ maps from control inputs to generalized forces; and the inequalities represent the state constraints and actuator limit constraints of our system.
 This equation fully determines the evolution of our quadrotor camera model over time.
-Tedrake~\shortcite{tedrake:2014} refers to the form of this as \emph{manipulator form}.
+Tedrake~\shortcite{tedrake:2016} refers to the form of this as \emph{manipulator form}.
 The matrices in this equation, known as the \emph{manipulator matrices}, can be obtained by augmenting the quadrotor dynamics model presented by Mellinger and Kumar~\shortcite{mellinger:2011} to include a fully actuated 3 degree-of-freedom gimbal.
-We include a concise definition for these matrices in Appendix \ref{appendix:manipulator}, and a more detailed derivation in the supplementary material.
+We include a concise definition for these matrices in Section~\ref{sec:ch2:manipulator}, and a more detailed derivation in Section~\ref{sec:ch2:manipulator_detail}.
 
 
 
 \section{Synthesizing Virtual Camera Trajectories}
-\label{section:synthesizing_virtual_camera_trajectories}
+\label{sec:ch2:synthesizing_virtual_camera_trajectories}
 %
 In this section, we consider the problem of synthesizing a camera trajectory from a sequence of user-specified camera pose keyframes and easing curve control points.
 %Synthesizing virtual camera trajectories in this way allows users of our tool to design shots visually, while also giving them precise timing control over the shots. 
 At a high level, our approach is to smoothly interpolate our camera pose keyframes to produce a camera path.
 Likewise, we smoothly interpolate our easing curve control points to produce an easing curve.
 We optimize the smoothness of these curves by solving a constrained quadratic minimization problem that guarantees $C^4$ continuity.
-We justify this continuity requirement explicitly in Section \ref{section:flatness}.
+We justify this continuity requirement explicitly in Section~\ref{sec:ch2:flatness}.
 
 We follow the standard practice in computer graphics~\cite{parent:2007} of decoupling the spatial and temporal specification of camera motion: the \emph{camera path} defines \emph{where} the camera should go, but does not define \emph{when} the camera should go there.
 In order to define a \emph{camera trajectory} as a function of time, we re-parameterize the camera path according to the progression in the easing curve.
 
 \paragraph{Representing Camera Paths and Easing Curves as Piecewise Polynomials}
 Any piecewise polynomial representation of degree 5 or higher has enough free coefficients to enforce $C^4$ continuity.
-In the supplementary material, we evaluate alternative polynomial representations for quadrotor camera paths.
+In Section~\ref{sec:ch2:derivative_experiment}, we evaluate alternative polynomial representations for quadrotor camera paths.
 In our experience, we found that \nth{7} degree piecewise polynomials produce the smoothest and most reasonably bounded control signals for quadrotors.
 For this reason, we choose to represent camera paths and easing curves using \nth{7} degree piecewise polynomials.
 
@@ -109,28 +109,28 @@ We would like to find the optimal set of coefficients and derivatives, $\mathbf{
 \text{subject to~~~~} p_i(0)                           & = v_i                     & p_i(1)                             & = v_{i+1}                  \\
                       \frac{d^j}{d\bar{u}_i^j} p_i(0)  & = w_{i}^j\mathbf{d}_{i,j} & \frac{d^j}{d\bar{u}_i^j} p_i(1)    & = w_{i}^j\mathbf{d}_{i+1,j}\\
 \end{aligned}
-\label{equation:c_star_d_star}
+\label{eqn:ch2:c_star_d_star}
 \end{equation}
 %
 where $p_i$ is the $i^\text{th}$ polynomial segment; $\bar{u}_i=\frac{u-u_i}{u_{i+1}-u_{i}} \in [0,1]$ is a normalized scalar parameter used to evaluate $p_i$;  $j \in \{1,2,3,4\}$ is an index that refers to the various derivatives of our polynomial segments; and $w_i=u_{i+1}-u_i$ is the width of the $i^{\text{th}}$ polynomial segment in non-normalized parameter space.
 
 The objective function in this optimization problem attempts to make the resulting curve as smooth as possible.
 The equality constraints in this optimization problem ensure that our keyframes are correctly interpolated, and that the derivatives of adjacent polynomial segments match, taking into account that some segments are wider than others in non-normalized parameter space.
-In the supplementary material, we evaluate alternative objective functions.
+In Section~\ref{sec:ch2:derivative_experiment}, we evaluate alternative objective functions.
 In our experience, we found that minimizing the \nth{4} derivative of our polynomials produced the smoothest and most reasonably bounded control signals for quadrotors.
 For this reason, we choose to minimize the \nth{4} derivative of our polynomials. 
 
-We can express the optimization problem in equation (\ref{equation:c_star_d_star}) as a constrained quadratic minimization problem as follows,
+We can express the optimization problem in equation~(\ref{eqn:ch2:c_star_d_star}) as a constrained quadratic minimization problem as follows,
 %
 \begin{equation}
 \begin{aligned}
 \mathbf{x}^{*} = \argmin_{\mathbf{x}} \mathbf{x}^T\mathbf{Q}\mathbf{x} \text{~~~~subject to~~~~} \mathbf{A}\mathbf{x} = \mathbf{b} \\
 \end{aligned}
-\label{equation:x_star}
+\label{eqn:ch2:x_star}
 \end{equation}
 %
-where $\mathbf{x}$ is the concatenated vector of our coefficients and derivatives; $\mathbf{Q}$ is the symmetric positive definite matrix obtained by expanding the expression $\int_0^1 \left( \frac{d^{4}}{d \bar{u}_i^{4}} p_i\right)^2 d\bar{u}_i$ from equation (\ref{equation:c_star_d_star}); $\mathbf{A}$ is the matrix and $\mathbf{b}$ is the vector that can be obtained by expressing the equality constraints from equation (\ref{equation:c_star_d_star}) in matrix form. 
-The problem in equation (\ref{equation:x_star}) can be solved by solving the following linear system,
+where $\mathbf{x}$ is the concatenated vector of our coefficients and derivatives; $\mathbf{Q}$ is the symmetric positive definite matrix obtained by expanding the expression $\int_0^1 \left( \frac{d^{4}}{d \bar{u}_i^{4}} p_i\right)^2 d\bar{u}_i$ from equation~(\ref{eqn:ch2:c_star_d_star}); $\mathbf{A}$ is the matrix and $\mathbf{b}$ is the vector that can be obtained by expressing the equality constraints from equation~(\ref{eqn:ch2:c_star_d_star}) in matrix form. 
+The problem in equation~(\ref{eqn:ch2:x_star}) can be solved by solving the following linear system,
 %
 \begin{equation}
 \begin{aligned}
@@ -154,7 +154,7 @@ The problem in equation (\ref{equation:x_star}) can be solved by solving the fol
 \label{equation:x_star_lambda_star}
 \end{equation}
 %
-where $\mathbf{\lambda}$ is the Lagrange multiplier variable obtained by transforming equation (\ref{equation:x_star}) into unconstrained form~\cite{boyd:2004}.
+where $\mathbf{\lambda}$ is the Lagrange multiplier variable obtained by transforming equation~(\ref{eqn:ch2:x_star}) into unconstrained form~\cite{boyd:2004}.
 
 When solving the constrained quadratic minimization problem in this section, we found that spacing our camera pose keyframes in non-normalized parameter space according to a \emph{chordal parameterization}~\cite{yuksel:2011} helped to produce well-behaved smooth camera paths.
 To that end, we also constrained the $1^{\text{st}}$ derivatives at the endpoints of our camera path as we would for Natural Cubic Splines~\cite{bartels:1987}.
@@ -169,16 +169,62 @@ Therefore our camera trajectory will be $C^4$ continuous with respect to time af
 
 
 \section{Synthesizing State Space Trajectories and Control Trajectories}
-\label{section:flatness}
+\label{sec:ch2:flatness}
+
+
+\begin{Listing}[t]
+\caption{
+Computing the orientation of the quadrotor in the world frame.
+We begin by substituting linear acceleration and mass into Newton's Second Law to solve for net force (line 1).
+We make the observation that we can always decompose the net force acting on our quadrotor into a thrust force and an external force, where the external force models effects like gravity, wind, and drag.
+With this observation in mind, we solve for thrust force (line 2).
+We make the observation that our quadrotor model can only generate thrust forces along its local $\mathbf{y}$ axis.
+With this observation in mind, we normalize the thrust force and set the quadrotor's local $\mathbf{y}$ axis equal to the normalized thrust force vector (line 3).
+This approach guarantees that the quadrotor's orientation is always consistent with equation~(\ref{eqn:ch2:manipulator}).
+Or stated more precisely, that the state space trajectory we compute in Section \ref{sec:ch2:flatness}, when substituted into equation~(\ref{eqn:ch2:manipulator}), always yields a left hand side that is in the column space of the matrix $\mathbf{B}$.
+In our algorithm, the quadrotor's local $\mathbf{y}$ (up) axis, in combination with the virtual camera's local $\mathbf{x}$ (forward) axis, uniquely determines the orientation of the quadrotor (lines 4--6).
+}
+\label{lst:ch2:orientation_quad}
+\begin{algorithmic}[1]
+
+\small
+
+\REQUIRE { ~~\\ \vspace{-7pt}
+
+\begin{itemize}
+\item Acceleration of the virtual camera in the world frame, $\ddot{\mathbf{p}}_c$. \vspace{-7pt}
+\item Virtual camera's local $\mathbf{x}$ axis (i.e., the look-at vector) in the world frame, $\mathbf{x}_c$. \vspace{-7pt}
+\item External force in the world frame, $\mathbf{f}_e$. \vspace{-7pt}
+\item Mass of the quadrotor camera, $m$.
+\end{itemize}
+
+}
+
+\ENSURE  { ~~\\ \vspace{-7pt}
+
+\begin{itemize}
+\item Rotation matrix representing the quadrotor's orientation in the world frame, $\mathbf{R}_{\mathcal{W},\mathcal{Q}}$.
+\end{itemize}
+
+}
+
+\STATE { $ \mathbf{f}                           \gets m\ddot{\mathbf{p}}_c$ }
+\STATE { $ \mathbf{f}_t                         \gets \mathbf{f} - \mathbf{f}_e $ }
+\STATE { $ \mathbf{y}_q                         \gets \text{normalized $\mathbf{f}_t$ } $ }
+\STATE { $ \mathbf{z}_q                         \gets \text{normalized $\mathbf{y}_q \times \mathbf{x}_c$ } $ }
+\STATE { $ \mathbf{x}_q                         \gets \text{normalized $\mathbf{z}_q \times \mathbf{y}_q$ } $ }
+\STATE { $ \mathbf{R}_{\mathcal{W},\mathcal{Q}} \gets \text{the rotation matrix defined by the axes $\mathbf{x}_q$, $\mathbf{y}_q$, $\mathbf{z}_q$ } $ }
+
+\end{algorithmic}
+\end{Listing}
 
 In this section, we consider the problem of synthesizing a \emph{state space trajectory} and corresponding \emph{control trajectory} that will command our quadrotor and gimbal to follow a given \emph{virtual camera trajectory} in the world frame.
 At a high level, our approach is to compute a trajectory through our quadrotor camera's state space, that places the gimbal at the same world frame pose as the virtual camera we are trying to follow at all times.
-We then substitute this \emph{state space trajectory} into equation (\ref{equation:manipulator}) to solve for the corresponding \emph{control trajectory}.
-Note that the quadrotor's orientation is partially determined by its direction of acceleration (see Listing \ref{listing:orientation_quad}).
+We then substitute this \emph{state space trajectory} into equation~(\ref{eqn:ch2:manipulator}) to solve for the corresponding \emph{control trajectory}.
+Note that the quadrotor's orientation is partially determined by its direction of acceleration (see Listing~\ref{lst:ch2:orientation_quad}).
 Therefore, we must use the available degrees of freedom in the gimbal, to align the orientation of the gimbal with the orientation of the virtual camera we are trying to follow.
 
 \paragraph{Computing a State Space Trajectory}
-\label{subsection:computing_a_state_space_trajectory}
 
 In this subsection, we compute a state space trajectory for our quadrotor camera as a function of a given virtual camera trajectory.
 We assume that the virtual camera trajectory has been discretized into a sequence of $T+1$ camera poses evenly spaced in time.
@@ -194,10 +240,10 @@ At each moment in time along the trajectory, we solve for the degrees of freedom
 Set the position of the quadrotor equal to the position of the virtual camera.
 
 \item
-Compute the orientation of the quadrotor based on the acceleration and orientation of the virtual camera (see Listing \ref{listing:orientation_quad}).
+Compute the orientation of the quadrotor based on the acceleration and orientation of the virtual camera (see Listing~\ref{lst:ch2:orientation_quad}).
 In this step, we align the quadrotor's orientation to its direction of acceleration.
-This approach guarantees that the quadrotor's orientation is always consistent with equation (\ref{equation:manipulator}).
-Or stated more precisely, that the state space trajectory we compute in this section, when substituted into equation (\ref{equation:manipulator}), always yields a left hand side that is in the column space of the matrix $\mathbf{B}$.
+This approach guarantees that the quadrotor's orientation is always consistent with equation~(\ref{eqn:ch2:manipulator}).
+Or stated more precisely, that the state space trajectory we compute in this section, when substituted into equation~(\ref{eqn:ch2:manipulator}), always yields a left hand side that is in the column space of the matrix $\mathbf{B}$.
 
 Our algorithm here is similar to the algorithm presented by Mellinger and Kumar~\shortcite{mellinger:2011}.
 However, we adapt their algorithm to determine the quadrotor's orientation from the virtual camera's orientation (and its direction of acceleration), rather than requiring the quadrotor's yaw angle to be specified explicitly.
@@ -221,76 +267,34 @@ In doing so, we have solved for the state space trajectory, corresponding to the
 The state space trajectory we compute above is not unique.
 There are other state space trajectories that will follow the given virtual camera trajectory.
 For example, the quadrotor could be at a different yaw angle, and the gimbal could also be at a different orientation to compensate.
-Among this family of valid state space trajectories, our algorithm computes the state space trajectory that sets the gimbal's yaw angle to zero, while minimizing the magnitude of the gimbal's pitch angle (Listing \ref{listing:orientation_quad}, lines 3-5).
-This approach means our algorithm can be used without modification on quadrotor cameras with 2 degree-of-freedom gimbals, as well as the 3 degree-of-freedom gimbal we assume in our model. 
-
-\begin{Listing}[t]
-\caption{
-Computing the orientation of the quadrotor in the world frame.
-We begin by substituting linear acceleration and mass into Newton's Second Law to solve for net force (line 1).
-We make the observation that we can always decompose the net force acting on our quadrotor into a thrust force and an external force, where the external force models effects like gravity, wind, and drag.
-With this observation in mind, we solve for thrust force (line 2).
-We make the observation that our quadrotor model can only generate thrust forces along its local $\mathbf{y}$ axis.
-With this observation in mind, we normalize the thrust force and set the quadrotor's local $\mathbf{y}$ axis equal to the normalized thrust force vector (line 3).
-This approach guarantees that the quadrotor's orientation is always consistent with equation (\ref{equation:manipulator}).
-Or stated more precisely, that the state space trajectory we compute in Section \ref{section:flatness}, when substituted into equation (\ref{equation:manipulator}), always yields a left hand side that is in the column space of the matrix $\mathbf{B}$.
-In our algorithm, the quadrotor's local $\mathbf{y}$ axis, in combination with the virtual camera's local $\mathbf{x}$ axis, uniquely determines the orientation of the quadrotor (lines 4--6).
-}
-\label{listing:orientation_quad}
-\begin{algorithmic}[1]
-
-\small
-
-\REQUIRE { ~\\
-\begin{itemize}
-\item Acceleration of the virtual camera in the world frame, $\ddot{\mathbf{p}}_c$.
-\item Virtual camera's local $\mathbf{x}$ axis (i.e., the look-at vector) in the world frame, $\mathbf{x}_c$.
-\item External force in the world frame, $\mathbf{f}_e$.
-\item Mass of the quadrotor camera, $m$.
-\end{itemize}
-}
-
-\ENSURE  { ~\\
-\begin{itemize}
-\item Rotation matrix representing the quadrotor's orientation in the world frame, $\mathbf{R}_{\mathcal{W},\mathcal{Q}}$.
-\end{itemize}
-~}
-
-\STATE { $ \mathbf{f}                           \gets m\ddot{\mathbf{p}}_c$ }
-\STATE { $ \mathbf{f}_t                         \gets \mathbf{f} - \mathbf{f}_e $ }
-\STATE { $ \mathbf{y}_q                         \gets \text{normalized $\mathbf{f}_t$ } $ }
-\STATE { $ \mathbf{z}_q                         \gets \text{normalized $\mathbf{y}_q \times \mathbf{x}_c$ } $ }
-\STATE { $ \mathbf{x}_q                         \gets \text{normalized $\mathbf{z}_q \times \mathbf{y}_q$ } $ }
-\STATE { $ \mathbf{R}_{\mathcal{W},\mathcal{Q}} \gets \text{the rotation matrix defined by the axes $\mathbf{x}_q$, $\mathbf{y}_q$, $\mathbf{z}_q$ } $ }
-
-\end{algorithmic}
-\end{Listing}
+Among this family of valid state space trajectories, our algorithm computes the state space trajectory that sets the gimbal's yaw angle to zero, while minimizing the magnitude of the gimbal's pitch angle (Listing~\ref{lst:ch2:orientation_quad}, lines 3-5).
+This approach means our algorithm can be used without modification on quadrotor cameras with 2 degree-of-freedom gimbals, as well as the 3 degree-of-freedom gimbal we assume in our model.
 
 \paragraph{Computing a Control Trajectory}
-\label{subsection:computing_a_control_trajectory}
+\label{sec:ch2:computing_a_control_trajectory}
 
 In this subsection, we compute a control trajectory $\mathbf{u}_{0:T}$, as a function of our state space trajectory $\mathbf{q}_{0:T}$.
 We begin by computing the \nth{1} and \nth{2} derivatives of our state space trajectory, $\dot{\mathbf{q}}_{0:T}$ and $\ddot{\mathbf{q}}_{0:T}$ respectively, using finite differences.
-We compute our control trajectory by repeatedly substituting $\mathbf{q}$, $\dot{\mathbf{q}}$, and $\ddot{\mathbf{q}}$ into equation (\ref{equation:manipulator}), and solving for $\mathbf{u}$, at each moment in time along the discretely sampled state space trajectory.
-We use the Moore-Penrose pseudoinverse of $\mathbf{B}$ to invert equation (\ref{equation:manipulator}), which in this case, is guaranteed to yield an exact unique solution for $\mathbf{u}$.
-This is because we explicitly constructed $\mathbf{q}_{0:T}$ to be consistent with the equations of motion for our system, so the left hand side of equation (\ref{equation:manipulator}) is always in the column space of $\mathbf{B}$, and $\mathbf{B}$ is always full column rank.
-We include a proof that $\mathbf{B}$ is always full column rank in the supplementary material.
+We compute our control trajectory by repeatedly substituting $\mathbf{q}$, $\dot{\mathbf{q}}$, and $\ddot{\mathbf{q}}$ into equation~(\ref{eqn:ch2:manipulator}), and solving for $\mathbf{u}$, at each moment in time along the discretely sampled state space trajectory.
+We use the Moore-Penrose pseudoinverse of $\mathbf{B}$ to invert equation~(\ref{eqn:ch2:manipulator}), which in this case, is guaranteed to yield an exact unique solution for $\mathbf{u}$.
+This is because we explicitly constructed $\mathbf{q}_{0:T}$ to be consistent with the equations of motion for our system, so the left hand side of equation~(\ref{eqn:ch2:manipulator}) is always in the column space of $\mathbf{B}$, and $\mathbf{B}$ is always full column rank.
+We include a proof that $\mathbf{B}$ is always full column rank in Section~\ref{sec:ch2:rank}.
 
 \paragraph{$C^4$ Continuity}
 \label{subsection:smoothness_requirements_on_the_virtual_camera_trajectory}
 
 A virtual camera trajectory must be at least $C^4$ continuous with respect to time if we hope to synthesize a control trajectory to follow it.
 At a high level, this continuity requirement arises from the fact that a quadrotor can only apply thrust forces along its local \emph{up} axis.
-Indeed, we see in Listing \ref{listing:orientation_quad} (lines 1--3) that we use the \nth{2} derivative of the virtual camera position $\ddot{\mathbf{p}}_c$ to solve for the quadrotor's orientation degrees of freedom.
-Moreover, we see in equation (\ref{equation:manipulator}) that we use the \nth{2} derivative of the quadrotor's degree-of-freedom vector $\ddot{\mathbf{q}}$ to solve for the control input $\mathbf{u}$.
+Indeed, we see in Listing \ref{lst:ch2:orientation_quad} (lines 1--3) that we use the \nth{2} derivative of the virtual camera position $\ddot{\mathbf{p}}_c$ to solve for the quadrotor's orientation degrees of freedom.
+Moreover, we see in equation~(\ref{eqn:ch2:manipulator}) that we use the \nth{2} derivative of the quadrotor's degree-of-freedom vector $\ddot{\mathbf{q}}$ to solve for the control input $\mathbf{u}$.
 Therefore, the control input $\mathbf{u}$ is a function of the \nth{4} derivative of the virtual camera trajectory.
 If a virtual camera trajectory is not at least $C^4$ continuous, then the control input will not be well-defined across the trajectory. This continuity requirement is also noted by Mellinger and Kumar~\shortcite{mellinger:2011}.
 
 \paragraph{Unbounded Control Inputs}
 
-The state space trajectory $\mathbf{q}_{0:T}$ we compute in this section is guaranteed to satisfy the equations of motion given in equation (\ref{equation:manipulator}).
+The state space trajectory $\mathbf{q}_{0:T}$ we compute in this section is guaranteed to satisfy the equations of motion given in equation~(\ref{eqn:ch2:manipulator}).
 In other words, there exists some control trajectory $\mathbf{u}_{0:T}$ that will follow $\mathbf{q}_{0:T}$.
 However, the control inputs required to follow  $\mathbf{q}_{0:T}$ might exceed the physical limits of a particular real-world quadrotor.
-In general, it is not guaranteed that $\mathbf{u}_{0:T}$ and $\mathbf{q}_{0:T}$ will satisfy the actuator limit constraints and state constraints given in equation (\ref{equation:manipulator}).
+In general, it is not guaranteed that $\mathbf{u}_{0:T}$ and $\mathbf{q}_{0:T}$ will satisfy the actuator limit constraints and state constraints given in equation~(\ref{eqn:ch2:manipulator}).
 We must take extra care to ensure that  $\mathbf{q}_{0:T}$ and $\mathbf{u}_{0:T}$ satisfy these constraints.
-We address this issue interactively in our user interface, as described in Section \ref{section:ui}.
+We address this issue interactively in our user interface, as described in Section~\ref{sec:ch2:ui}.

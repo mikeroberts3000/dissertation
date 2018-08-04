@@ -252,19 +252,23 @@ Evaluating the $\argmax$ expression on line 4 requires evaluating $f$ once for e
 \small
 
 \REQUIRE { ~~\\ \vspace{-7pt}
+
 \begin{itemize}
 \item A ground set of elements $C$. \vspace{-7pt}
 \item A monotone submodular function $f(C_{S})$ to be maximized, where $C_S \subseteq C$. \vspace{-7pt}
 \item A cardinality constraint $|C_{S}| = N$. \vspace{-7pt}
 \item A mutual exclusion constraint $C_{S} \in \mathcal{M}$, that defines which elements in $C$ are incompatible.
 \end{itemize}
+
 }
 
 \ENSURE  { ~\\ \vspace{-7pt}
+
 \begin{itemize}
-\item A subset $C_{S} \subseteq C$ that maximizes $f$ to within 50\% of global optimality, subject to the cardinality constraint and mutual exclusion constraint. \vspace{-12pt}
+\item A subset $C_{S} \subseteq C$ that maximizes $f$ to within 50\% of global optimality, subject to the cardinality constraint and mutual exclusion constraint.
 \end{itemize}
-~}
+
+}
 
 \STATE { $ S \gets \varnothing $ }
 \STATE { $ G \gets C $ }

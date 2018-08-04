@@ -1,15 +1,16 @@
-\section{Real-Time Control System and Hardware Platform}\label{section:hw}
+\section{Real-Time Control System and Hardware Platform}
+\label{sec:ch2:hw}
 
-\begin{figure*}[th!]
-  \centering
-  \includegraphics[width=5.5in]{images/2015_siggraph_asia/ControlAlgorithm}
-  \caption{
+\begin{figure*}[t]
+\centering
+\includegraphics[width=6.0in]{images/2015_siggraph_asia/ControlAlgorithm}
+\caption{
 Block diagram of our real-time control system for executing camera trajectories.
 On a ground station (left), our trajectory follower (white) samples the camera trajectory, transmitting the sampled position and velocity of look-at and look-from points to the quadrotor.
 Our trajectory follower allows the user to optionally adjust a time scaling factor, to execute the trajectory faster or slower.
 On board the quadrotor (right), the higher-level look-from and look-at position controllers interface with a lower-level attitude controller (yellow) and motor controller (green), similar to those described by Kumar and Michael~\protect\shortcite{kumar:2012}.
 }
-\label{figure:controlsystem}
+\label{fig:ch2:controlsystem}
 \end{figure*}
 
 In this section, we describe the real-time control system and hardware platform we use to execute camera trajectories autonomously and capture real video footage.
@@ -17,7 +18,7 @@ In this section, we describe the real-time control system and hardware platform 
 %This feedback controller compensates for unexpected disturbances, unmodeled forces, and sensor noise, without having to recompute the camera trajectory.
 
 \paragraph{Real-Time Control System}
-We show a block diagram of our real-time control system in Figure \ref{figure:controlsystem}.
+We show a block diagram of our real-time control system in Figure~\ref{fig:ch2:controlsystem}.
 We build our real-time control system on top of the open source \textsc{ArduPilot} autopilot software \cite{apm:2015}. 
 The \textsc{ArduPilot} software runs on board the quadrotor, and provides a hierarchical feedback controller for following camera trajectories, similar to the controller described by Kumar and Michael~\shortcite{kumar:2012}. 
 The \textsc{ArduPilot} feedback controller takes as input the position and velocity of look-at and look-from points along a camera trajectory.
