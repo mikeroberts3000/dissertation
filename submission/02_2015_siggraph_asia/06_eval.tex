@@ -29,7 +29,7 @@ Our tool saved a log and screen recording of each session.
 Afterwards, they accompanied us to capture their shots, watched the resulting videos, and filled out an exit questionnaire.
 
 All four participants successfully completed the two tasks.
-We show the shots from our users in Figure~\ref{fig:ch2:all_shots}, and henceforth we refer to the shots using the lettering in this figure.
+We show the shots from our users in Figure \ref{fig:ch2:all_shots}, and henceforth we refer to the shots using the lettering in this figure.
 The participants' shots included a wide variety of camera motions.
 None of the shots violated any of the kinematic or dynamic limits shown on the feasibility plots in our tool.
 We were able to successfully capture all eight shots.
@@ -49,7 +49,7 @@ The novice shot (bottom) contains a similar camera motion.
 \paragraph{Novices and Experts Successfully Designed Challenging Shots}
 We asked the expert cinematographers to describe what elements were challenging about the shots they created, if they were to capture them with existing approaches for quadrotor cinematography.
 Each expert identified camera motions in their shots that would either take many attempts, or would have to be modified to be less challenging.
-We identified similar camera motions in the novice shots (see Figure~\ref{fig:ch2:expert_novice_comparison}).
+We identified similar camera motions in the novice shots (see Figure \ref{fig:ch2:expert_novice_comparison}).
 We summarize the similarities between novice and expert shots as follows,
 
 \begin{itemize}
@@ -66,7 +66,7 @@ This camera motion is difficult to execute manually, since small initial errors 
 \item
 Expert shot (a) required smoothly adjusting the rate of camera re-orientation, to end at a specific orientation at a specific time.
 We found this camera motion in novice shot (a).
-We show these two shots in Figure~\ref{fig:ch2:expert_novice_comparison}.
+We show these two shots in Figure \ref{fig:ch2:expert_novice_comparison}.
 This camera motion is especially difficult to execute manually.
 The camera must translate towards a point while tilting down, so that the end of the tilting motion exactly coincides with being above the tower, all while approaching the tower in a straight line.
 The expert that designed shot (a) remarked that executing such a shot manually would require approximately 20 attempts.
@@ -79,7 +79,7 @@ This finding suggests that users can successfully design compelling shots with c
 Our exit survey asked participants to identify the most useful feature of our user interface, and rank the features in our user interface on a 5-point scale from \emph{not useful} to \emph{indispensable}.
 Three of the four participants identified the ability to visually preview their shot as being the most useful, and all users rated this feature as a 4 or higher.
 %Several participants asked about the accuracy of this preview.
-Indeed, Figure~\ref{fig:ch1:teaser_ch2} shows that our visual preview accurately estimates the appearance of recorded video footage.
+Indeed, Figure \ref{fig:ch1:teaser_ch2} shows that our visual preview accurately estimates the appearance of recorded video footage.
 This finding validates our approach of enabling users to design shots visually, and highlights the importance of ensuring physical feasibility during the design process.
 
 \begin{figure}[t]
@@ -104,7 +104,7 @@ This finding validates our approach of enabling users to precisely control the t
 \paragraph{Visual Feasibility Feedback was Useful, Although Some Participants Would Have Preferred an Automatic Solution}
 All of our participants responded to the visual feasibility feedback in our tool.
 Users successfully modified their shots until they were within the physical limits of our hardware, as shown on the feasibility plots in our tool.
-Figure~\ref{fig:ch2:feasibility_fix} shows Expert 1 modifying both the altitude and timing of three keyframes to stay within the vertical speed limit of our quadrotor.
+Figure \ref{fig:ch2:feasibility_fix} shows Expert 1 modifying both the altitude and timing of three keyframes to stay within the vertical speed limit of our quadrotor.
 However, participants were divided in their opinions about our feasibility plots.
 One participant rated it as the best part of the tool.
 He described it as essential to creating shots at the physical limits of the hardware.
@@ -114,7 +114,7 @@ We believe that developing an automatic solution to fix feasibility violations i
 
 \begin{tcolorbox}[before skip=20pt, after skip=20pt, sharp corners]
 \begin{center}
-\textbf{In Chapter~\ref{sec:ch3}, we will present an automatic algorithm for correcting feasibility violations.}
+\textbf{In Chapter \ref{sec:ch3}, we will present an automatic algorithm for correcting feasibility violations.}
 \end{center}
 \end{tcolorbox}
 
@@ -130,7 +130,7 @@ Note that the horizontal scaling varies varies on the left and right subplots.
 \end{figure}
 
 \paragraph{Accuracy}
-To quantify how well our quadrotor camera system follows trajectories, we compared the intended trajectories created by our users, to the actual trajectories executed by our quadrotor (see Figure~\ref{fig:ch2:errors}).
+To quantify how well our quadrotor camera system follows trajectories, we compared the intended trajectories created by our users, to the actual trajectories executed by our quadrotor (see Figure \ref{fig:ch2:errors}).
 The average position error across all shots was 1.12m ($\sigma = 0.57$), and was never greater than 3.01m.
 The average velocity error across all shots was 0.11m/s ($\sigma = 0.10$), and was never greater than 0.80m/s.
 In general, our system is limited by the positioning and pointing accuracy of our quadrotor.
@@ -141,6 +141,6 @@ This finding suggests that the level of accuracy achievable with current-generat
 \paragraph{Concluding Remarks}
 Overall, all participants were enthusiastic about using our system.
 %In particular, they remarked on the usefulness of having a 3D camera view to visualize their shot.
-%Indeed, Figure~\ref{fig:teaser} shows that our visual preview accurately estimates the appearance of the recorded video footage.
+%Indeed, Figure \ref{fig:teaser} shows that our visual preview accurately estimates the appearance of the recorded video footage.
 Experts appreciated having a powerful tool to visually plan complex trajectories and execute repeatable takes (e.g. Expert 1 remarked \emph{``Normally I fly less ambitious paths to avoid making mistakes!''} and \emph{``I love how I can get the same shot, take after take, day after day!''}).
 Novices were particularly enthusiastic about being able to capture high-quality video footage with quadrotors without having experience flying them (e.g., Novice 2 remarked, \emph{``I liked how it turned a `drone flying problem' into a `drawing a curve in space problem'. I don't know how to fly a drone and don't want to, but I find drawing in 3D very intuitive.'}').

@@ -1,15 +1,15 @@
 \section{Related Work}
 
 \paragraph{Designing Trajectories for Physical Cameras}
-The \textsc{DJI Ground Station}~\cite{dji:2015} and the \textsc{APM Mission Planner}~\cite{apm:2015} systems allow users to design quadrotor camera trajectories by placing waypoints on a 2D map.
-The \textsc{QGroundControl} system~\cite{meier:2012} allows users to design quadrotor camera trajectories by placing waypoints in a 3D scene.
+The \textsc{DJI Ground Station} \cite{dji:2015} and the \textsc{APM Mission Planner} \cite{apm:2015} systems allow users to design quadrotor camera trajectories by placing waypoints on a 2D map.
+The \textsc{QGroundControl} system \cite{meier:2012} allows users to design quadrotor camera trajectories by placing waypoints in a 3D scene.
 However, these tools do not allow users to edit the visual composition of shots, do not provide a virtual preview, do not provide precise timing control, and do not provide feasibility feedback.
 Tools for designing physical camera trajectories that support these cinematography-oriented features have been developed, such as the \textsc{Bot \& Dolly IRIS} camera control system\footnote{\textsc{Bot \& Dolly} is now defunct, and the specifications for the \textsc{IRIS} camera control system are no longer publicly available.}.
 However, these tools are not applicable to quadrotor cameras.
 In our tool, we enable cinematography-oriented features (visual editing, virtual preview, precise timing control, feasibility feedback) in a tool for quadrotor cameras, and thus more effectively assist quadrotor cinematographers.
 
-The \textsc{3D Robotics Solo}~\cite{3drobotics:2015} and \textsc{DJI Go}~\cite{dji:2015a} systems allow users to interactively modify quadrotor camera shots during flight.
-These systems allow users to control the orientation of the camera and speed of the quadrotor as it flies between pre-defined waypoints~\cite{3drobotics:2015}, or in a circular orbit around a point of interest~\cite{dji:2015a}.
+The \textsc{3D Robotics Solo} \cite{3drobotics:2015} and \textsc{DJI Go} \cite{dji:2015a} systems allow users to interactively modify quadrotor camera shots during flight.
+These systems allow users to control the orientation of the camera and speed of the quadrotor as it flies between pre-defined waypoints \cite{3drobotics:2015}, or in a circular orbit around a point of interest \cite{dji:2015a}.
 Whereas these systems can be used to \emph{modify} shots as they are being executed, our system can also be used to precisely \emph{design} shots before they are executed.
 Moreover, the \textsc{3D Robotics Solo} and \textsc{DJI Go} systems have autonomous flight modes that will track a moving target object, whereas our system can be used to design shots where there is no particular target object.
 
@@ -18,24 +18,24 @@ Designing trajectories for virtual cameras is a classical problem in computer an
 See the comprehensive survey by Christie et al.~\shortcite{christie:2008}.
 We discuss directly related work not included in this survey here.
 Oskam et al.~\shortcite{oskam:2009} and Hsu et al.~\shortcite{hsu:2013} generate camera trajectories by solving a discrete optimization problem on a graph representation of a scene.
-Both of these methods refine the resulting  discrete trajectory, either by using an iterative smoothing procedure~\cite{oskam:2009}, or by solving a continuous optimization problem~\cite{hsu:2013}.
+Both of these methods refine the resulting  discrete trajectory, either by using an iterative smoothing procedure \cite{oskam:2009}, or by solving a continuous optimization problem \cite{hsu:2013}.
 Existing methods for synthesizing virtual camera trajectories guarantee $C^1$ or $C^2$ continuity.
 However, we demonstrate in Section \ref{sec:ch2:flatness} that camera trajectories must be $C^4$ continuous in order to obey the physical equations of motion for quadrotors.
 With this requirement in mind, our tool synthesizes $C^4$ camera trajectories.
 
 \paragraph{Designing Trajectories for Quadrotors}
-Our method for synthesizing quadrotor camera trajectories is similar to the trajectory synthesis methods introduced by Mellinger and Kumar~\shortcite{mellinger:2011} and Richter et al.~\shortcite{richter:2013}.
+Our method for synthesizing quadrotor camera trajectories is similar to the trajectory synthesis methods introduced by Mellinger and Kumar \shortcite{mellinger:2011} and Richter et al.~\shortcite{richter:2013}.
 These methods make the observation that there exists a \emph{reduced state space} in which all smooth trajectories are guaranteed to obey the physical equations of motion for quadrotors.
 Based on this observation, they synthesize trajectories by optimizing piecewise polynomials in the reduced state space.
 We use a similar approach, but adapt it to quadrotor cinematography.
 
 \paragraph{Quadrotors Equipped with Robotic Arms}
-Our quadrotor camera model builds on a growing literature describing physical models for quadrotors equipped with robotic arms~\cite{lipiello:2012,kim:2013,yang:2014,ruggiero:2015}.
+Our quadrotor camera model builds on a growing literature describing physical models for quadrotors equipped with robotic arms \cite{lipiello:2012,kim:2013,yang:2014,ruggiero:2015}.
 This literature is closely related to our work, in the sense that the camera in our quadrotor camera model can be thought of as a very short, very lightweight, single link, fully actuated robotic arm.
 Whereas existing approaches focus on designing feedback control policies to follow given trajectories, our approach focuses on synthesizing these trajectories subject to high-level user constraints.
 
 \paragraph{Object Tracking using Quadrotors}
-Computer vision algorithms and feedback control policies have been developed to track moving target objects using quadrotors equipped with cameras~\cite{teuliere:2011}.
+Computer vision algorithms and feedback control policies have been developed to track moving target objects using quadrotors equipped with cameras \cite{teuliere:2011}.
 These approaches could be immediately applied to quadrotor cinematography.
 However, existing approaches \emph{react} to moving target objects by optimizing the \emph{position} of the quadrotor.
 In contrast, we globally optimize the entire \emph{trajectory} of the quadrotor, and we do not assume the presence of a particular target object.

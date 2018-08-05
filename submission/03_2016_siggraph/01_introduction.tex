@@ -12,7 +12,7 @@ Despite the importance of reasoning about feasibility in the design process, exi
 At best, existing tools \emph{notify} users when their trajectories are infeasible, but offer no guidance on how to \emph{modify} these trajectories to make them feasible.
 It can be challenging for users to manually edit their trajectories to be feasible,  while preserving their original artistic intent. Indeed, requiring users to perform this type of manual editing can be quite burdensome, even for experienced users, since it requires users to reason explicitly about the non-linear quadrotor dynamics.
 
-In this paper, we introduce a fast and user-friendly algorithm for generating feasible quadrotor camera trajectories.
+In this chapter, we introduce a fast and user-friendly algorithm for generating feasible quadrotor camera trajectories.
 Our algorithm takes as input an infeasible trajectory designed by a user, and produces as output a feasible trajectory that is as similar as possible to the user's input.
 By design, our algorithm does not change the spatial layout or  visual contents of the input trajectory.
 Instead, our algorithm guarantees the feasibility of the output trajectory by \emph{re-timing} the input trajectory, perturbing its timing as little as possible while remaining within velocity and control force limits.
@@ -33,7 +33,7 @@ Third, our approach always provides an iterative solver with a well-defined sear
 %since slowing down the speed profile (i.e., driving the speed profile closer to zero, thereby forcing the quadrotor to execute the trajectory slower) always results in a closer-to-feasible trajectory.
 Together, these advantages enable an off-the-shelf solver to make very rapid progress towards an optimal solution, ultimately leading to the interactive performance of our algorithm.
 
-We demonstrate the utility of our algorithm by implementing it in \textsc{Horus}, the tool for designing quadrotor camera shots introduced in Chapter~\ref{sec:ch2}, where we achieve interactive performance across a wide range of camera trajectories.
+We demonstrate the utility of our algorithm by implementing it in \textsc{Horus}, the tool for designing quadrotor camera shots introduced in Chapter \ref{sec:ch2}, where we achieve interactive performance across a wide range of camera trajectories.
 We also apply our algorithm to a dataset of 8 infeasible camera trajectories, designed by 2 novice and 2 expert quadrotor cinematographers.
 In all our experiments, our algorithm successfully solves for optimal trajectories in less than 2 seconds, and is between 25$\times$ and 45$\times$ faster than a spacetime constraints approach implemented using a commercially available solver.
 As we scale to more finely discretized trajectories, this performance gap widens, with our algorithm outperforming spacetime constraints by between 90$\times$ and 180$\times$.

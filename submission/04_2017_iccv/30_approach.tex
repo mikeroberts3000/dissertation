@@ -1,37 +1,84 @@
-\vspace{-5pt}
 \section{Technical Overview}
-\label{sec:overview}
+\label{sec:ch4:overview}
 
 In order to generate scanning trajectories, our algorithm leverages a coarse estimate of the scene geometry.
 Initially, we do not have any estimate of the scene geometry, so we adopt an \emph{explore-then-exploit} approach.
 
 In the \emph{explore} phase, we fly our drone (i.e., we command our drone to fly autonomously) along a default trajectory at a safe distance above the scene, acquiring a sequence of images as we are flying.
 We land our drone, and subsequently feed the acquired images to an open-source multi-view stereo pipeline, thereby obtaining a coarse estimate of the scene geometry, and  a strictly conservative estimate of the scene's free space.
-We include a more detailed discussion of our \emph{explore} phase in the supplementary material.
-
-In the \emph{exploit} phase, we use this additional information about the scene to plan a scanning trajectory that attempts to maximize the fidelity of the resulting 3D reconstruction.
-At the core of our planning algorithm, is a coverage model that accounts for the domain-specific requirements of multi-view stereo reconstruction (Section \ref{sec:coverage_model}).
-Using this model, we generate a scanning trajectory that maximizes scene coverage, while respecting the drone's limited flight time (Section \ref{sec:trajectories}). 
-We fly the drone along our scanning trajectory, acquiring another sequence of images.
-Finally, we land our drone again, and we feed all the images we have acquired to our multi-view stereo pipeline to obtain a detailed 3D reconstruction of the scene.
+We include a more detailed discussion of our \emph{explore} phase in Section \ref{sec:ch4:explore}.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.47\textwidth]{images/2017_iccv/coverage_model_horizontal.pdf}{\vspace{-7pt}}
+\includegraphics[width=4.0in]{images/2017_iccv/coverage_model_horizontal.pdf}
 \end{center}
 \caption{
 Our coverage model for quantifying the usefulness of camera trajectories for multi-view stereo reconstruction. More useful trajectories cover more of the hemisphere of viewing angles around surface points.
 (a) An illustrative example showing coverage of a single surface point with three cameras. Each camera covers a circular disk on a hemisphere around the surface point $\mathbf{s}$, and the total solid angle covered by all the disks determines the total usefulness of the cameras.
 Note that the angular separation (i.e., baseline) between cameras $\mathbf{c}_2$ and $\mathbf{c}_3$ is small and leads to diminishing returns in their combined usefulness.
 (b) The usefulness of a camera trajectory, integrated over multiple surface points, is determined by summing the total covered solid angle for each of the individual surface points. Our model naturally encourages diverse observations of the scene geometry, and encodes the eventual diminishing returns of additional observations.
-\vspace{-10pt}
 }
-\label{fig:coverage_model}
+\label{fig:ch4:coverage_model}
 \end{figure}
+
+In the \emph{exploit} phase, we use this additional information about the scene to plan a scanning trajectory that attempts to maximize the fidelity of the resulting 3D reconstruction.
+At the core of our planning algorithm, is a coverage model that accounts for the domain-specific requirements of multi-view stereo reconstruction (Section \ref{sec:ch4:coverage_model}).
+Using this model, we generate a scanning trajectory that maximizes scene coverage, while respecting the drone's limited flight time (Section \ref{sec:ch4:trajectories}). 
+We fly the drone along our scanning trajectory, acquiring another sequence of images.
+Finally, we land our drone again, and we feed all the images we have acquired to our multi-view stereo pipeline to obtain a detailed 3D reconstruction of the scene.
+
+\section{Coverage Model for Camera Trajectories}
+\label{sec:ch4:coverage_model}
+
+In this section, we model the usefulness of a camera trajectory for multi-view stereo reconstruction, in terms of how well it covers the scene geometry.
+We provide an overview of our coverage model in Figure \ref{fig:ch4:coverage_model}.
+
+In reality, the most useful camera trajectory is the one that yields the highest-quality 3D reconstruction of the scene.
+However, it is not clear how we would search for such a camera trajectory directly, without resorting to flying candidate trajectories and performing expensive 3D reconstructions for each of them.
+In contrast, our coverage model only roughly approximates the true usefulness of a camera trajectory. 
+However, as we will see in the following section, our coverage model: (1) is motivated by established best practices for multi-view stereo image acquisition; (2) is easy to evaluate; (3) only requires a coarse estimate of the scene geometry as input;  and (4) exhibits submodular structure, which will enable us to efficiently maximize it.
+
+\paragraph{Best Practices for Multi-View Stereo Image Acquisition}
+As a rule of thumb, it is recommended to capture an image every 5--15 degrees around an object, and it is generally accepted that capturing images more densely will eventually lead to diminishing returns in the fidelity of the 3D reconstruction \cite{furukawa:2015}.
+Similarly, close-up and fronto-parallel views can help to resolve fine geometric details, because these views increase the effective resolution of estimated depth images, and contribute more reliable texture information to the reconstruction \cite{waechter:2014}.
+We explicitly encode these best practices for multi-view stereo image acquisition into our coverage model.
+
+\paragraph{Formal Definition}
+Given a candidate camera trajectory and approximate scene geometry as a triangle mesh, our goal is to quantify how well the trajectory covers the scene geometry.
+We first uniformly sample the camera trajectory to generate a discrete set $C$, consisting of individual camera poses $\mathbf{c}_{0:I}$.
+Similarly, we uniformly sample oriented surface points $\mathbf{s}_{0:J}$ from the scene geometry.
+For each oriented surface point $\mathbf{s}_j$, we define an oriented hemisphere $H_j$ around it.
+For each surface point $\mathbf{s}_j$ and camera $\mathbf{c}_i$, we define a circular disk $D^j_i$ that covers an angular region of the hemisphere $H_j$, centered at the location where $\mathbf{c}_i$ projects onto $H_j$ (see Figure \ref{fig:ch4:coverage_model}).
+When the surface point $\mathbf{s}_j$ is not visible from the camera $\mathbf{c}_i$, we define the disk $D^j_i$ to have zero radius, and we truncate the extent of each disk so that it does not extend past the equator of $H_j$.
+We define the total covered region of the hemisphere $H_j$ as the union of all the disks that partially cover $H_j$ (see Figure \ref{fig:ch4:coverage_model}), referring to this total covered region as $V_j = \bigcup_{i=0}^I D^j_i$.
+We define our coverage model as follows,
 %
+\begin{equation}
+\begin{aligned}
+f(C) = \sum_{j=0}^{J} \int_{V_j} w_j(\mathbf{h}) d\mathbf{h}
+\end{aligned}
+\label{eqn:ch4:model_irregular}
+\end{equation}
+%
+where the outer summation is over all hemispheres; $\int_{V_j} d\mathbf{h}$ refers to the surface integral over the covered region $V_j$; and $w_j(\mathbf{h})$ is a non-negative weight function that assigns different reward values for covering different parts of $H_j$.
+Our model can be interpreted as quantifying how well a set of cameras covers the scene's \emph{surface light field} \cite{davis:2012,wood:2000}.
+We include a method for efficiently evaluating our coverage model in Section \ref{sec:ch4:eval_coverage}.
+
+To encourage close-up views, we set the radius of $D^j_i$ to decay exponentially as the camera $\mathbf{c}_i$ moves away from the surface point $\mathbf{s}_j$. To encourage fronto-parallel views, we design each function $w_j(\mathbf{h})$ to decay in a cosine-weighted fashion, as the hemisphere location $\mathbf{h}$ moves away from the hemisphere pole.
+We include our exact formulation for $D^j_i$ and $w_j(\mathbf{h})$ in Section \ref{sec:ch4:parameters}.
+
+\paragraph{Submodularity}
+Roughly speaking, a set function is submodular if the marginal reward for adding an element to the input set always decreases, as more elements are added to the input set \cite{krause:2014}.
+Our coverage model is submodular, because all coverage functions with non-negative weights are submodular \cite{krause:2014}.
+Submodularity is a useful property to identify when attempting to optimize a set function, and is often referred to as the discrete analogue of convexity.
+We will leverage submodularity extensively in the following section, as we derive our algorithm for generating camera trajectories that maximizing coverage. 
+
+\section{Generating Optimal Camera Trajectories}
+\label{sec:ch4:trajectories}
+
 \begin{figure*}[t]
 \begin{center}
-\includegraphics[width=1.0\textwidth]{images/2017_iccv/algorithm_overview.pdf}{\vspace{-10pt}}
+\includegraphics[width=6.0in]{images/2017_iccv/algorithm_overview.pdf}
 \end{center}
 \caption{
 Overview of our algorithm for generating camera trajectories that maximize coverage.
@@ -40,65 +87,11 @@ Overview of our algorithm for generating camera trajectories that maximize cover
 (c) In doing so, we remove the choice of camera orientation from our problem, coarsening our problem into a more standard form.
 (d) The solution to the problem in (b) defines an approximation to our coarsened problem, where there is an additive reward for visiting each node.
 (e) Finally, we solve for the optimal closed path on the additive approximation defined in (d).
-\vspace{-10pt}
 }
-\label{fig:algorithm_overview}
+\label{fig:ch4:algorithm_overview}
 \end{figure*}
 
-\vspace{-5pt}
-\section{Coverage Model for Camera Trajectories}
-\label{sec:coverage_model}
-
-In this section, we model the usefulness of a camera trajectory for multi-view stereo reconstruction, in terms of how well it covers the scene geometry.
-We provide an overview of our coverage model in Figure \ref{fig:coverage_model}.
-
-In reality, the most useful camera trajectory is the one that yields the highest-quality 3D reconstruction of the scene.
-However, it is not clear how we would search for such a camera trajectory directly, without resorting to flying candidate trajectories and performing expensive 3D reconstructions for each of them.
-In contrast, our coverage model only roughly approximates the true usefulness of a camera trajectory. 
-However, as we will see in the following section, our coverage model: (1) is motivated by established best practices for multi-view stereo image acquisition; (2) is easy to evaluate; (3) only requires a coarse estimate of the scene geometry as input;  and (4) exhibits submodular structure, which will enable us to efficiently maximize it.
-
-\vspace{-10pt}
-\paragraph{Best Practices for Multi-View Stereo Image Acquisition}
-As a rule of thumb, it is recommended to capture an image every 5--15 degrees around an object, and it is generally accepted that capturing images more densely will eventually lead to diminishing returns in the fidelity of the 3D reconstruction \cite{furukawa:2015}.
-Similarly, close-up and fronto-parallel views can help to resolve fine geometric details, because these views increase the effective resolution of estimated depth images, and contribute more reliable texture information to the reconstruction \cite{waechter:2014}.
-We explicitly encode these best practices for multi-view stereo image acquisition into our coverage model.
-
-\vspace{-10pt}
-\paragraph{Formal Definition}
-Given a candidate camera trajectory and approximate scene geometry as a triangle mesh, our goal is to quantify how well the trajectory covers the scene geometry.
-We first uniformly sample the camera trajectory to generate a discrete set $C$, consisting of individual camera poses $\mathbf{c}_{0:I}$.
-Similarly, we uniformly sample oriented surface points $\mathbf{s}_{0:J}$ from the scene geometry.
-For each oriented surface point $\mathbf{s}_j$, we define an oriented hemisphere $H_j$ around it.
-For each surface point $\mathbf{s}_j$ and camera $\mathbf{c}_i$, we define a circular disk $D^j_i$ that covers an angular region of the hemisphere $H_j$, centered at the location where $\mathbf{c}_i$ projects onto $H_j$ (see Figure \ref{fig:coverage_model}).
-When the surface point $\mathbf{s}_j$ is not visible from the camera $\mathbf{c}_i$, we define the disk $D^j_i$ to have zero radius, and we truncate the extent of each disk so that it does not extend past the equator of $H_j$.
-We define the total covered region of the hemisphere $H_j$ as the union of all the disks that partially cover $H_j$ (see Figure \ref{fig:coverage_model}), referring to this total covered region as $V_j = \bigcup_{i=0}^I D^j_i$.
-We define our coverage model as follows,
-%
-\begin{equation}
-\begin{aligned}
-f(C) = \sum_{j=0}^{J} \int_{V_j} w_j(\mathbf{h}) d\mathbf{h}
-\end{aligned}
-\label{eqn:model_irregular}
-\end{equation}
-%
-where the outer summation is over all hemispheres; $\int_{V_j} d\mathbf{h}$ refers to the surface integral over the covered region $V_j$; and $w_j(\mathbf{h})$ is a non-negative weight function that assigns different reward values for covering different parts of $H_j$.
-Our model can be interpreted as quantifying how well a set of cameras covers the scene's \emph{surface light field} \cite{davis:2012,wood:2000}.
-We include a method for efficiently evaluating our coverage model in the supplementary material.
-
-To encourage close-up views, we set the radius of $D^j_i$ to decay exponentially as the camera $\mathbf{c}_i$ moves away from the surface point $\mathbf{s}_j$. To encourage fronto-parallel views, we design each function $w_j(\mathbf{h})$ to decay in a cosine-weighted fashion, as the hemisphere location $\mathbf{h}$ moves away from the hemisphere pole.
-We include our exact formulation for $D^j_i$ and $w_j(\mathbf{h})$ in the supplementary material.
-
-\vspace{-10pt}
-\paragraph{Submodularity}
-Roughly speaking, a set function is submodular if the marginal reward for adding an element to the input set always decreases, as more elements are added to the input set \cite{krause:2014}.
-Our coverage model is submodular, because all coverage functions with non-negative weights are submodular \cite{krause:2014}.
-Submodularity is a useful property to identify when attempting to optimize a set function, and is often referred to as the discrete analogue of convexity.
-We will leverage submodularity extensively in the following section, as we derive our algorithm for generating camera trajectories that maximizing coverage. 
-
-\vspace{-5pt}
-\section{Generating Optimal Camera Trajectories}
-\label{sec:trajectories}
-We provide an overview of our algorithm in Figure \ref{fig:algorithm_overview}.
+We provide an overview of our algorithm in Figure \ref{fig:ch4:algorithm_overview}.
 Our approach is to formulate a reward-collecting optimization problem on a graph.
 The nodes in the graph represent camera positions, the edges represent Euclidean distances between camera positions, and the rewards are collected by visiting new nodes.
 The goal is to find a path that collects as much reward as possible, subject to a budget constraint on the total path length.
@@ -113,20 +106,18 @@ Indeed, the marginal reward we collect at a node might be very large, or very sm
 The marginal reward we collect at each node also depends strongly on the orientation of our camera. In other words, our orienteering problem involves extra choices -- how to orient the camera at each visited node -- and these choices are globally coupled through our submodular coverage function. Therefore, even existing algorithms for \emph{submodular orienteering} \cite{chekuri:2012,chekuri:2005,heng:2015,singh:2009a,singh:2009b,zhang:2016} are not directly applicable to our problem, because these algorithms assume there are no extra choices to make at each visited node.
 
 Our strategy will be to apply two successive problem transformations.
-First, we leverage submodularity to solve for the approximately optimal camera orientation at every node in our graph, ignoring path constraints (Fig.~\ref{fig:algorithm_overview}b, Section \ref{sec:trajectories_orientation}).
-In doing so, we remove the choice of camera orientation from our orienteering problem, thereby coarsening it into a more standard form (Fig.~\ref{fig:algorithm_overview}c).
-Second, we leverage submodularity to construct a tight additive approximation of our coverage function (Fig.~\ref{fig:algorithm_overview}d, Section \ref{sec:trajectories_subgradient}).
+First, we leverage submodularity to solve for the approximately optimal camera orientation at every node in our graph, ignoring path constraints (Figure \ref{fig:ch4:algorithm_overview}b, Section \ref{sec:ch4:trajectories_orientation}).
+In doing so, we remove the choice of camera orientation from our orienteering problem, thereby coarsening it into a more standard form (Figure \ref{fig:ch4:algorithm_overview}c).
+Second, we leverage submodularity to construct a tight additive approximation of our coverage function (Figure \ref{fig:ch4:algorithm_overview}d, Section \ref{sec:ch4:trajectories_subgradient}).
 In doing so, we relax our coarsened submodular orienteering problem into a standard additive orienteering problem.
-We formulate this additive orienteering problem as a compact integer linear program, and solve it approximately using a commercially available solver (Fig.~\ref{fig:algorithm_overview}e, Section \ref{sec:trajectories_ilp}).
+We formulate this additive orienteering problem as a compact integer linear program, and solve it approximately using a commercially available solver (Figure \ref{fig:ch4:algorithm_overview}e, Section \ref{sec:ch4:trajectories_ilp}).
 
-\vspace{-10pt}
 \paragraph{Preprocessing}
 We begin by constructing a discrete set of all the possible camera poses we might include in our path.
 We refer to this set as our \emph{ground set} of camera poses, $C$.
 We construct this set by uniformly sampling a user-defined bounding box that spans the scene, then uniformly sampling a downward-facing unit hemisphere to produce a set of look-at vectors that our drone camera can actuate. We define our ground set as the Cartesian product of these positions and look-at vectors.
-We construct the graph for our orienteering problem as the grid graph of all the unique camera positions in $C$, pruned so that it is entirely restricted to the known free space in the scene  (see Section \ref{sec:overview}).
+We construct the graph for our orienteering problem as the grid graph of all the unique camera positions in $C$, pruned so that it is entirely restricted to the known free space in the scene  (see Section \ref{sec:ch4:overview}).
 
-\vspace{-10pt}
 \paragraph{Our Submodular Orienteering Problem}
 Let $\mathbf{P} = (\mathbf{p}_0, \mathbf{v}_0), (\mathbf{p}_1, \mathbf{v}_1), \ldots, (\mathbf{p}_q, \mathbf{v}_q)$ be a camera path through our graph, represented as a sequence of camera poses taken from our ground set.
 We represent each camera pose as a position $\mathbf{p}_i$ and a look-at vector $\mathbf{v}_i$.
@@ -137,7 +128,7 @@ We would like to find the optimal path $\mathbf{P}^{\star}$ as follows,
 \mathbf{P}^{\star} = \argmax_{\mathbf{P}} f(C_{\mathbf{P}})~~~~~~~~~~~~~~~~\\
 \text{subject to} ~~~~~ l(\mathbf{P}) \leq B ~~~~~ \mathbf{p}_0 = \mathbf{p}_q = \mathbf{p}_\text{root}
 \end{aligned}
-\label{eqn:submodular_orienteering}
+\label{eqn:ch4:submodular_orienteering}
 \end{equation}
 %
 where
@@ -147,10 +138,10 @@ For safety reasons, we would also like to design trajectories that consume close
 We make the observation that our problem is intractable in its current form, because it requires searching over an exponential number of paths through our graph. This observation motivates the following two problem transformations.
 
 \subsection{Solving for Optimal Camera Orientations} 
-\label{sec:trajectories_orientation}
+\label{sec:ch4:trajectories_orientation}
 
 Our goal in this subsection is to solve for the optimal camera orientation at every node in our graph, ignoring path constraints. 
-We achieve this goal with the following relaxation of the problem in equation (\ref{eqn:submodular_orienteering}).
+We achieve this goal with the following relaxation of the problem in equation (\ref{eqn:ch4:submodular_orienteering}).
 Let $C_S \subseteq C$ be a subset of camera poses from our ground set. We would like to find the optimal subset of camera poses  $C_S^{\star}$ as follows,
 %
 \begin{equation}
@@ -158,7 +149,7 @@ Let $C_S \subseteq C$ be a subset of camera poses from our ground set. We would 
 C_S^{\star} = \argmax_{C_S} f(C_S)~~~~~~~~~\\
 \text{subject to} ~~~~~ \left\vert C_S \right\vert = N ~~~~~ C_S \in \mathcal{M}
 \end{aligned}
-\label{eqn:cardinality_matroid}
+\label{eqn:ch4:cardinality_matroid}
 \end{equation}
 %
 where
@@ -166,16 +157,16 @@ $\left\vert C_S \right\vert$ is the cardinality of $C_S$;
 $N$ is the total number of unique positions in our graph;
 and the constraint $C_S \in \mathcal{M}$ enforces mutual exclusion, where we are allowed to select at most one camera orientation at each node in our graph.
 In this relaxed problem, we are attempting to maximize coverage by selecting exactly one camera orientation at each node in our graph.
-We can interpret such a solution as a coarsened ground set for the problem in equation (\ref{eqn:submodular_orienteering}), thereby transforming it into a standard submodular orienteering problem.
+We can interpret such a solution as a coarsened ground set for the problem in equation (\ref{eqn:ch4:submodular_orienteering}), thereby transforming it into a standard submodular orienteering problem.
 
-Because our coverage function is submodular, the problem in equation (\ref{eqn:cardinality_matroid}) can be solved very efficiently, and to within 50\% of global optimality, with a very simple greedy algorithm \cite{krause:2014}.
+Because our coverage function is submodular, the problem in equation (\ref{eqn:ch4:cardinality_matroid}) can be solved very efficiently, and to within 50\% of global optimality, with a very simple greedy algorithm \cite{krause:2014}.
 Roughly speaking, the greedy algorithm selects camera poses from our ground set in order of marginal reward, taking care to respect the mutual exclusion constraint, until no more elements can be selected.
-Submodularity can also be exploited to significantly reduce the computation time required by the greedy algorithm (e.g., from multiple hours to a couple of minutes, for the problems we consider in this paper) \cite{krause:2014}.
+Submodularity can also be exploited to significantly reduce the computation time required by the greedy algorithm (e.g., from multiple hours to a couple of minutes, for the problems we consider in this chapter) \cite{krause:2014}.
 The approximation guarantee in this subsection relies on the fact that selecting more camera poses never reduces coverage, i.e., our coverage function exhibits a property known as \emph{monotonicity} \cite{krause:2014}.
-We include a more detailed discussion of the greedy algorithm, and provide pseudocode, in the supplementary material.
+We include a more detailed discussion of the greedy algorithm, and provide pseudocode, in Section \ref{sec:ch4:greedy}.
 
 \subsection{Additive Approximation of Coverage}
-\label{sec:trajectories_subgradient}
+\label{sec:ch4:trajectories_subgradient}
 
 Our goal in this subsection is to construct an additive approximation of coverage.
 In other words, we would like to define an additive reward at each node in our graph, that closely approximates our coverage function for arbitrary subsets of visited nodes.
@@ -190,11 +181,11 @@ This guarantee is useful for our purposes, because any solution we get from opti
 
 When choosing a permutation, it is generally advantageous to place camera poses with the greatest marginal reward at the front of our permutation.
 With this intuition in mind, we form our permutation by sorting the camera poses in our coarsened ground set according to their marginal reward.
-Fortunately, we have already computed this ordering in Section \ref{sec:trajectories_orientation} using the greedy algorithm.
+Fortunately, we have already computed this ordering in Section \ref{sec:ch4:trajectories_orientation} using the greedy algorithm.
 So, we simply reuse this ordering to construct our additive approximation.
 
 \subsection{Orienteering as an Integer Linear Program}
-\label{sec:trajectories_ilp}
+\label{sec:ch4:trajectories_ilp}
 
 After constructing our additive approximation of coverage, we obtain the following additive orienteering problem, 
 %
@@ -203,17 +194,17 @@ After constructing our additive approximation of coverage, we obtain the followi
 \mathbf{P}^{\star} = \argmax_{\mathbf{P}} \sum_{C_{\mathbf{P}}} \tilde f_i~~~~~~~~~~~~~~~\\
 \text{subject to} ~~~~~ l(\mathbf{P}) \leq B ~~~~~ \mathbf{p}_0 = \mathbf{p}_q = \mathbf{p}_\text{root}
 \end{aligned}
-\label{eqn:ilp}
+\label{eqn:ch4:ilp}
 \end{equation}
 %
-where $\tilde f_i$ is the additive reward for each unique      node along the path $\mathbf{P}$.
+where $\tilde f_i$ is the additive reward for each unique node along the path $\mathbf{P}$.
 In its current form, it is still not clear how to solve this problem efficiently, because we must still search over an exponential number of paths through our graph.
 Fortunately, we can express this problem as a compact integer linear program, using a formulation suggested by Letchford et al.~\cite{letchford:2013}.
 We transform our undirected graph into a directed graph, and we define integer variables to represent if nodes are visited and directed edges are traversed.
 Remarkably, we can constrain the configuration of these integer variables to form only valid paths through our graph, with a compact set of linear constraints.
-We include a more detailed derivation of this formulation in the supplementary material.
+We include a more detailed derivation of this formulation in Section \ref{sec:ch4:ilp_detail}.
 
-Leveraging the formulation suggested by Letchford et al., we convert the problem in equation (\ref{eqn:ilp}) into a standard form that can be given directly to an off-the-shelf solver.
+Leveraging the formulation suggested by Letchford et al., we convert the problem in equation (\ref{eqn:ch4:ilp}) into a standard form that can be given directly to an off-the-shelf solver.
 We use the modeling language CVXPY \cite{cvxpy:2016} to specify our problem, and we use the commercially available Gurobi Optimizer \cite{gurobi:2017} as the back-end solver.
 Solving integer programming problems to global optimality is NP-hard, and can take a very long time, so we specify a solver time limit of 5 minutes.
 Gurobi returns the best feasible solution it finds within the time limit, along with a worst-case optimality gap.

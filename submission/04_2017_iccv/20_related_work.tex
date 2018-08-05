@@ -1,4 +1,3 @@
-\vspace{-5pt}
 \section{Related Work}
 
 \paragraph{Aerial 3D Scanning and Mapping}
@@ -24,7 +23,6 @@ In the first phase, these algorithms select a sequence of \emph{next-best-views}
 In the second phase, they find an efficient path that connects the previously selected views.
 In contrast, our algorithm reasons about these two problems -- selecting good views and routing between them -- jointly in a unified global optimization problem, enabling us to generate more rewarding trajectories, and ultimately higher-quality 3D\ reconstructions.
 
-\vspace{-13pt}
 \paragraph{View Selection and Path Planning}
 The problem of optimizing the placement (and motion) of sensors to improve performance on a perception task is a classical problem in computer vision and robotics, where it generally goes by the name of \emph{active vision}, e.g., see the comprehensive surveys \cite{chen:2011,scott:2003,tarabanis:1995}.
 We discuss directly related work not included in these surveys here.
@@ -36,7 +34,6 @@ Several algorithms have been proposed to select an appropriate subset of views f
 However, these methods do not model travel costs between views.
 In contrast, we impose a hard constraint on the travel cost of the path formed by the views we select.
 
-\vspace{-14pt}
 \paragraph{Submodular Path Planning}
 Submodularity \cite{krause:2014} has been considered in path planning scenarios before, first in the theory community \cite{chekuri:2012,chekuri:2005}, and more recently in the artificial intelligence \cite{singh:2009a,singh:2009b,zhang:2016} and robotics \cite{heng:2015,hollinger:2013} communities.
 The coverage path planning formulation of Heng et al.~\cite{heng:2015} is similar to ours, in the sense that both formulations use the same technique for approximating coverage \cite{iyer:2013b,iyer:2013a}.
