@@ -138,7 +138,7 @@ Left column: Google Earth visualizations of the trajectories.
 Middle and right columns: results obtained by flying a drone along each trajectory, capturing images, and feeding the images to multi-view stereo software.
 Our trajectories lead to noticeably more detailed 3D reconstructions than overhead trajectories.
 In all our experiments, we control for the flight time, battery consumption, number of images, and quality settings used in the 3D reconstruction.
-We provide an overview of our algorithm at \url{http://youtu.be/89fFmfVZSO8}.
+We provide an overview of our algorithm at \url{http://youtu.be/89fFmfVZSO8}. This figure appears in \cite{roberts:2017} and is reprinted with permission. \copyright{} 2017 IEEE
 }
 \label{fig:ch1:teaser_ch4}
 \end{figure}
@@ -213,7 +213,7 @@ We show that the resulting videos are faithful to virtual shot previews, even wh
 In Chapter \ref{sec:ch4}, we introduce an algorithm to generate drone camera trajectories, such that the imagery acquired during the flight will later produce a high-fidelity 3D model (see Figure \ref{fig:ch1:teaser_ch4}). Our method uses a coarse estimate of the scene geometry to plan camera trajectories that: (1) cover the scene as thoroughly as possible; (2) observe the scene geometry from a diverse set of viewing angles; (3) avoid obstacles; and (4) respect a user-specified flight time
 budget. Our method relies on a mathematical model of scene coverage that exhibits an intuitive diminishing returns property known as \emph{submodularity}.
 We leverage this property extensively to design a trajectory planning algorithm  that reasons globally about the non-additive coverage reward obtained across a trajectory, jointly with the cost of traveling between views.
-We evaluate our method by using it to scan three large outdoor scenes, and we perform a quantitative evaluation using a photorealistic video game simulator.
+We evaluate our method by using it to scan three large outdoor scenes, and we perform a quantitative evaluation using a photorealistic video game simulator.\footnote{This passage appears in \cite{roberts:2017} and is reprinted with permission. \copyright{} 2017 IEEE}
 
 \item
 
@@ -224,5 +224,5 @@ In Chapter \ref{sec:ch5}, we summarize our findings and discuss future research 
 \noindent Together, these contributions form a comprehensive toolbox of trajectory optimization methods for drone cameras.
 In Table \ref{tbl:ch1:links}, we provide links to the project page, overview video, and open-source implementation for each chapter.
 The overview videos are intended to be viewed before diving into each chapter.
-This work appears in a series of previously published papers \cite{joubert:2015,roberts:2016,roberts:2017}.
+This work appears in a series of previously published papers \cite{joubert:2015,roberts:2017,roberts:2016}.
 The intended scope of the mathematical notation we introduce is local to each chapter, and related work is discussed within each chapter.

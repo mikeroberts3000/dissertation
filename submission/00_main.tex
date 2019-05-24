@@ -22,6 +22,13 @@
 \usepackage[noend]{algorithmic}
 \usepackage[super]{nth}
 
+\hypersetup{
+  colorlinks = true, %Colors links instead of ugly boxes
+  urlcolor   = blue, % Color for external hyperlinks
+  linkcolor  = blue, % Color of internal links
+  citecolor  = blue  % Color of citations
+}
+
 \floatstyle{boxed}
 \newfloat{Listing}{t}{ext}
 \renewcommand{\algorithmicrequire}{\small\textbf{Input:}}
@@ -34,12 +41,19 @@
 
 \newcommand{\shortcite}[1]{\cite{#1}}
 
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
 \title{Trajectory Optimization Methods for Drone Cameras}
 \author{Mike Roberts}
 \dept{Computer Science}
 \principaladviser{Pat Hanrahan}
 \firstreader{Doug James}
-\secondreader{Fredo Durand}
+\secondreader{Fr{\'e}do Durand}
 %\thirdreader{Jane Supernumerary} %if needed
 %\fourthreader{Severus Snape} %if needed
 
