@@ -2,7 +2,6 @@
 
 R = 00_main
 OO = mike_roberts_dissertation_
-O = mike_roberts_dissertation
 STY = *.sty
 FIG = images/*/*.pdf
 
@@ -22,7 +21,6 @@ $(R).pdf: *.tex $(STY) $(FIG) $(R).bbl
 	pdflatex $(R)
 	pdflatex $(R)
 	cp $(R).pdf $(OO).pdf
-	pdfjam $(OO).pdf 1,4-117 -o $(O).pdf
 
 clean:
 	rm -f $(R).log $(R).aux $(R).bbl $(R).blg $(R).out $(R).toc $(R).lot $(R).lof $(R).pdf
